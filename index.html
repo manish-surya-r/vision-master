@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision Master - Dynamic Eye Exercise Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Theme Variables */
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #1a1a1a;
+            --accent-bg: rgba(30, 30, 30, 0.8);
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-color: #00d4ff;
+            --accent-secondary: #ff6b6b;
+            --accent-tertiary: #4ecdc4;
+            --border-color: #333;
+        }
+
+        /* Dark Theme (Default) */
+        body.theme-dark {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #e0e0e0;
+        }
+
+        /* Light Themes */
+        body.theme-white {
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+            color: #333;
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9fa;
+            --accent-bg: rgba(255, 255, 255, 0.9);
+            --text-primary: #333;
+            --text-secondary: #666;
+            --border-color: #ddd;
+        }
+
+        body.theme-cream {
+            background: linear-gradient(135deg, #faf6f0 0%, #f0e6d2 100%);
+            color: #5d4037;
+            --primary-bg: #faf6f0;
+            --secondary-bg: #f5f0e8;
+            --accent-bg: rgba(250, 246, 240, 0.9);
+            --text-primary: #5d4037;
+            --text-secondary: #8d6e63;
+            --border-color: #d7ccc8;
+        }
+
+        body.theme-violet {
+            background: linear-gradient(135deg, #1a0d2e 0%, #3b1e54 100%);
+            color: #e1d5e7;
+            --primary-bg: #1a0d2e;
+            --secondary-bg: #2d1b45;
+            --accent-bg: rgba(45, 27, 69, 0.8);
+            --text-primary: #e1d5e7;
+            --text-secondary: #b39ddb;
+            --border-color: #512da8;
+        }
+
+        body.theme-blue {
+            background: linear-gradient(135deg, #0d1929 0%, #1e3a5f 100%);
+            color: #e3f2fd;
+            --primary-bg: #0d1929;
+            --secondary-bg: #1a2332;
+            --accent-bg: rgba(26, 35, 50, 0.8);
+            --text-primary: #e3f2fd;
+            --text-secondary: #90caf9;
+            --border-color: #1976d2;
+        }
+
+        body.theme-yellow {
+            background: linear-gradient(135deg, #2e2100 0%, #5d4200 100%);
+            color: #fff8e1;
+            --primary-bg: #2e2100;
+            --secondary-bg: #3e2723;
+            --accent-bg: rgba(62, 39, 35, 0.8);
+            --text-primary: #fff8e1;
+            --text-secondary: #ffcc02;
+            --border-color: #ff8f00;
+        }
+
+        body.theme-green {
+            background: linear-gradient(135deg, #0d2818 0%, #1b4332 100%);
+            color: #e8f5e8;
+            --primary-bg: #0d2818;
+            --secondary-bg: #1a2e23;
+            --accent-bg: rgba(26, 46, 35, 0.8);
+            --text-primary: #e8f5e8;
+            --text-secondary: #81c784;
+            --border-color: #388e3c;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: var(--accent-bg);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Theme Selector */
+        .theme-selector {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-left: 2rem;
+        }
+
+        .theme-btn {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-btn.active {
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+        }
+
+        .theme-dark { background: #0a0a0a; }
+        .theme-white { background: #ffffff; }
+        .theme-cream { background: #faf6f0; }
+        .theme-violet { background: #3b1e54; }
+        .theme-blue { background: #1e3a5f; }
+        .theme-yellow { background: #5d4200; }
+        .theme-green { background: #1b4332; }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            background: radial-gradient(circle at center, var(--secondary-bg) 0%, var(--primary-bg) 100%);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-secondary), var(--accent-tertiary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes textGlow {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.2); }
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Levels Section */
+        .levels-section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--accent-color);
+        }
+
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .level-card {
+            background: var(--accent-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transform: rotate(-45deg);
+            transition: transform 0.5s ease;
+        }
+
+        .level-card:hover::before {
+            transform: rotate(-45deg) translateY(100%);
+        }
+
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .level-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .level-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .level-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .level-features {
+            font-size: 0.9rem;
+            color: var(--accent-tertiary);
+            margin-bottom: 1.5rem;
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-tertiary));
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Exercise Display */
+        .exercise-display {
+            background: var(--accent-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            display: none;
+            border: 1px solid var(--border-color);
+        }
+
+        .exercise-display.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .exercise-area {
+            width: 100%;
+            height: 400px;
+            background: var(--primary-bg);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            margin: 2rem 0;
+            border: 2px solid var(--border-color);
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            transition: all 0.1s ease;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.7);
+        }
+
+        .shape.circle {
+            border-radius: 50%;
+        }
+
+        .shape.square {
+            border-radius: 0;
+        }
+
+        .shape.triangle {
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 30px solid #ff6b6b;
+            border-radius: 0;
+        }
+
+        .controls {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: var(--accent-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .timer {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+
+        .level-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .instructions {
+            background: var(--accent-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .instructions h3 {
+            color: var(--accent-tertiary);
+            margin-bottom: 1rem;
+        }
+
+        .exercise-stats {
+            background: var(--accent-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* Benefits Section */
+        .benefits-section {
+            padding: 4rem 0;
+            background: rgba(15, 15, 15, 0.1);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .benefit-card {
+            background: var(--accent-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--accent-bg);
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .levels-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .level-info {
+                grid-template-columns: 1fr;
+            }
+
+            .theme-selector {
+                margin-left: 1rem;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="theme-dark">
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">Vision Master</a>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#levels">Levels</a></li>
+                        <li><a href="#instructions">Instructions</a></li>
+                        <li><a href="#benefits">Benefits</a></li>
+                    </ul>
+                </nav>
+                <div class="theme-selector">
+                    <div class="theme-btn theme-dark active" onclick="changeTheme('dark')"></div>
+                    <div class="theme-btn theme-white" onclick="changeTheme('white')"></div>
+                    <div class="theme-btn theme-cream" onclick="changeTheme('cream')"></div>
+                    <div class="theme-btn theme-violet" onclick="changeTheme('violet')"></div>
+                    <div class="theme-btn theme-blue" onclick="changeTheme('blue')"></div>
+                    <div class="theme-btn theme-yellow" onclick="changeTheme('yellow')"></div>
+                    <div class="theme-btn theme-green" onclick="changeTheme('green')"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="container">
+                <h1>Vision Master</h1>
+                <p>Dynamic Eye Exercise Platform</p>
+                <p>Reduce strain, improve focus, strengthen your vision</p>
+                <p>Perfect for gamers, students, and digital professionals</p>
+            </div>
+        </section>
+
+        <section class="levels-section" id="levels">
+            <div class="container">
+                <h2 class="section-title">Progressive Training Levels</h2>
+                <div class="levels-grid">
+                    <div class="level-card fade-in" onclick="startExercise(1)">
+                        <div class="level-number">Level 1</div>
+                        <div class="level-title">Basic Horizontal Tracking</div>
+                        <div class="level-description">Single dot moving left to right</div>
+                        <div class="level-features">• Constant speed • Solid color • 30 seconds</div>
+                        <button class="start-btn">Start Exercise</button>
+                    </div>
+
+                    <div class="level-card fade-in" onclick="startExercise(2)">
+                        <div class="level-number">Level 2</div>
+                        <div class="level-title">Vertical & Diagonal Tracking</div>
+                        <div class="level-description">Enhanced movement patterns</div>
+                        <div class="level-features">• Moderate speed • Color changes • 45 seconds</div>
+                        <button class="start-btn">Start Exercise</button>
+                    </div>
+
+                    <div class="level-card fade-in" onclick="startExercise(3)">
+                        <div class="level-number">Level 3</div>
+                        <div class="level-title">Circular & Zigzag Paths</div>
+                        <div class="level-description">Complex movement patterns</div>
+                        <div class="level-features">• Variable colors • Higher speed • 1 minute</div>
+                        <button class="start-btn">Start Exercise</button>
+                    </div>
+
+                    <div class="level-card fade-in" onclick="startExercise(4)">
+                        <div class="level-number">Level 4</div>
+                        <div class="level-title">Multiple Dots with Color Change</div>
+                        <div class="level-description">3-4 dots moving independently</div>
+                        <div class="level-features">• Dynamic colors • Increased speed • 1.5 minutes</div>
+                        <button class="start-btn">Start Exercise</button>
+                    </div>
+
+                    <div class="level-card fade-in" onclick="startExercise(5)">
+                        <div class="level-number">Level 5</div>
+                        <div class="level-title">Disappearing/Reappearing Dots</div>
+                        <div class="level-description">4-5 dots with fade effects</div>
+                        <div class="level-features">• Random positions • Varying colors • 2 minutes</div>
+                        <button class="start-btn">Start Exercise</button>
+                    </div>
+
+                    <div class="level-card fade-in" onclick="startExercise(6)">
+                        <div class="level-number">Level 6</div>
+                        <div class="level-title">Changing Shapes & Paths</div>
+                        <div class="level-description">Circles, squares, triangles</div>
+                        <div class="level-features">• Shape morphing • Complex paths • 2.5 minutes</div>
+                        <button class="start-btn">Start Exercise</button>
+                    </div>
+
+                    <div class="level-card fade-in" onclick="startExercise(7)">
+                        <div class="level-number">Level 7</div>
+                        <div class="level-title">High Complexity Randomized</div>
+                        <div class="level-description">Ultimate eye agility test</div>
+                        <div class="level-features">• 8-10 shapes • Rapid changes • 3-5 minutes</div>
+                        <button class="start-btn">Start Exercise</button>
+                    </div>
+                </div>
+
+                <div class="exercise-display" id="exercise-display">
+                    <h3 id="exercise-title">Exercise</h3>
+                    <div class="level-info">
+                        <div class="instructions" id="exercise-instructions">
+                            <h3>Instructions</h3>
+                            <p id="instruction-text">Click on a level to see instructions here.</p>
+                        </div>
+                        <div class="exercise-stats">
+                            <h3>Exercise Stats</h3>
+                            <div class="stat-item">
+                                <span>Duration:</span>
+                                <span class="stat-value" id="duration-display">0:00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Objects:</span>
+                                <span class="stat-value" id="objects-count">1</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Difficulty:</span>
+                                <span class="stat-value" id="difficulty-level">Beginner</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="exercise-area" id="exercise-area">
+                        <!-- Dynamic shapes will be created here -->
+                    </div>
+                    <div class="timer" id="timer">00:00</div>
+                    <div class="controls">
+                        <button class="control-btn" onclick="startAnimation()">▶ Start</button>
+                        <button class="control-btn" onclick="pauseAnimation()">⏸ Pause</button>
+                        <button class="control-btn" onclick="stopAnimation()">⏹ Stop</button>
+                        <button class="control-btn" onclick="resetExercise()">🔄 Reset</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="benefits-section" id="benefits">
+            <div class="container">
+                <h2 class="section-title">Benefits of Dynamic Eye Training</h2>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">👁️</div>
+                        <h3>Reduced Eye Strain</h3>
+                        <p>Combat digital fatigue with targeted exercises</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🎯</div>
+                        <h3>Enhanced Focus</h3>
+                        <p>Improve visual attention and concentration</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">⚡</div>
+                        <h3>Faster Tracking</h3>
+                        <p>Develop quicker visual reaction times</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">💪</div>
+                        <h3>Stronger Eye Muscles</h3>
+                        <p>Build flexibility and endurance</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🎮</div>
+                        <h3>Gaming Performance</h3>
+                        <p>Maintain edge during extended sessions</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">📚</div>
+                        <h3>Study Enhancement</h3>
+                        <p>Reduce fatigue during long study sessions</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Vision Master - Dynamic Eye Exercise Platform. Train your vision, protect your eyes!</p>
+        </div>
+    </footer>
+
+    <script>
+        let currentLevel = 1;
+        let animationRunning = false;
+        let animationInterval;
+        let timerInterval;
+        let seconds = 0;
+        let shapes = [];
+        let currentTheme = 'dark';
+
+        const exercises = {
+            1: {
+                title: "Level 1: Basic Horizontal Tracking",
+                instructions: "Follow the single dot as it moves horizontally. Keep your head still and track smoothly with your eyes only.",
+                duration: 30,
+                objects: 1,
+                difficulty: "Beginner",
+                colors: ['#ff6b6b'],
+                shapes: ['circle'],
+                patterns: ['horizontal']
+            },
+            2: {
+                title: "Level 2: Vertical & Diagonal Tracking",
+                instructions: "Track the dot through vertical and diagonal movements. Notice the occasional color changes.",
+                duration: 45,
+                objects: 1,
+                difficulty: "Easy",
+                colors: ['#ff6b6b', '#4ecdc4', '#45b7d1'],
+                shapes: ['circle'],
+                patterns: ['vertical', 'diagonal']
+            },
+            3: {
+                title: "Level 3: Circular & Zigzag Paths",
+                instructions: "Follow the dot through circles and zigzag patterns. Speed increases gradually.",
+                duration: 60,
+                objects: 1,
+                difficulty: "Medium",
+                colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f7b731'],
+                shapes: ['circle'],
+                patterns: ['circular', 'zigzag']
+            },
+            4: {
+                title: "Level 4: Multiple Dots with Color Change",
+                instructions: "Track multiple dots moving independently. Focus on the color-changing patterns.",
+                duration: 90,
+                objects: 3,
+                difficulty: "Medium",
+                colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f7b731', '#5f27cd'],
+                shapes: ['circle'],
+                patterns: ['multi-horizontal', 'color-change']
+            },
+            5: {
+                title: "Level 5: Disappearing/Reappearing Dots",
+                instructions: "Track dots that fade in and out. Maintain focus as they reappear in new positions.",
+                duration: 120,
+                objects: 4,
+                difficulty: "Hard",
+                colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f7b731', '#5f27cd', '#fd79a8'],
+                shapes: ['circle'],
+                patterns: ['disappearing', 'random']
+            },
+            6: {
+                title: "Level 6: Changing Shapes & Paths",
+                instructions: "Follow shapes that morph between circles, squares, and triangles along complex paths.",
+                duration: 150,
+                objects: 5,
+                difficulty: "Very Hard",
+                colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f7b731', '#5f27cd', '#fd79a8', '#00b894'],
+                shapes: ['circle', 'square', 'triangle'],
+                patterns: ['morphing', 'complex']
+            },
+            7: {
+                title: "Level 7: High Complexity Randomized",
+                instructions: "Ultimate challenge! Track up to 8-10 shapes with rapid changes in size, color, and position.",
+                duration: 240,
+                objects: 8,
+                difficulty: "Expert",
+                colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f7b731', '#5f27cd', '#fd79a8', '#00b894', '#e17055'],
+                shapes: ['circle', 'square', 'triangle'],
+                patterns: ['chaos', 'rapid-change']
+            }
+        };
+
+        function changeTheme(theme) {
+            currentTheme = theme;
+            document.body.className = `theme-${theme}`;
+            
+            // Update active theme button
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.theme-${theme}`).classList.add('active');
+        }
+
+        function startExercise(level) {
+            currentLevel = level;
+            const exercise = exercises[level];
+            
+            document.getElementById('exercise-display').classList.add('active');
+            document.getElementById('exercise-title').textContent = exercise.title;
+            document.getElementById('instruction-text').textContent = exercise.instructions;
+            document.getElementById('duration-display').textContent = `${Math.floor(exercise.duration / 60)}:${(exercise.duration % 60).toString().padStart(2, '0')}`;
+            document.getElementById('objects-count').textContent = exercise.objects;
+            document.getElementById('difficulty-level').textContent = exercise.difficulty;
+            
+            resetTimer();
+            clearExerciseArea();
+            createShapes(exercise);
+            
+            document.getElementById('exercise-display').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function createShapes(exercise) {
+            const area = document.getElementById('exercise-area');
+            shapes = [];
+            
+            for (let i = 0; i < exercise.objects; i++) {
+                const shape = document.createElement('div');
+                shape.className = 'shape circle';
+                shape.style.width = '30px';
+                shape.style.height = '30px';
+                shape.style.background = exercise.colors[i % exercise.colors.length];
+                shape.style.left = Math.random() * (area.clientWidth - 30) + 'px';
+                shape.style.top = Math.random() * (area.clientHeight - 30) + 'px';
+                
+                area.appendChild(shape);
+                
+                shapes.push({
+                    element: shape,
+                    x: parseFloat(shape.style.left),
+                    y: parseFloat(shape.style.top),
+                    vx: (Math.random() - 0.5) * 4, // velocity x
+                    vy: (Math.random() - 0.5) * 4, // velocity y
+                    color: exercise.colors[i % exercise.colors.length],
+                    shapeType: exercise.shapes[i % exercise.shapes.length],
+                    angle: 0,
+                    opacity: 1,
+                    size: 30
+                });
+            }
+        }
+
+        function startAnimation() {
+            if (animationRunning) return;
+            
+            animationRunning = true;
+            startTimer();
+            
+            const exercise = exercises[currentLevel];
+            animationInterval = setInterval(() => {
+                updateShapes(exercise);
+            }, 50); // 20 FPS
+        }
+
+        function pauseAnimation() {
+            if (!animationRunning) return;
+            
+            animationRunning = false;
+            clearInterval(animationInterval);
+            clearInterval(timerInterval);
+        }
+
+        function stopAnimation() {
+            animationRunning = false;
+            clearInterval(animationInterval);
+            clearInterval(timerInterval);
+            resetTimer();
+        }
+
+        function resetExercise() {
+            stopAnimation();
+            const exercise = exercises[currentLevel];
+            clearExerciseArea();
+            createShapes(exercise);
+            resetTimer();
+        }
+
+        function updateShapes(exercise) {
+            const area = document.getElementById('exercise-area');
+            const areaWidth = area.clientWidth;
+            const areaHeight = area.clientHeight;
+            
+            shapes.forEach((shape, index) => {
+                // Apply movement patterns based on exercise level
+                switch (currentLevel) {
+                    case 1:
+                        updateHorizontalMovement(shape, areaWidth, areaHeight);
+                        break;
+                    case 2:
+                        updateVerticalDiagonalMovement(shape, areaWidth, areaHeight);
+                        break;
+                    case 3:
+                        updateCircularZigzagMovement(shape, areaWidth, areaHeight);
+                        break;
+                    case 4:
+                        updateMultipleDotsMovement(shape, areaWidth, areaHeight, exercise);
+                        break;
+                    case 5:
+                        updateDisappearingMovement(shape, areaWidth, areaHeight);
+                        break;
+                    case 6:
+                        updateMorphingMovement(shape, areaWidth, areaHeight, exercise);
+                        break;
+                    case 7:
+                        updateChaosMovement(shape, areaWidth, areaHeight, exercise);
+                        break;
+                }
+                
+                // Update position
+                shape.element.style.left = shape.x + 'px';
+                shape.element.style.top = shape.y + 'px';
+                shape.element.style.opacity = shape.opacity;
+                
+                // Update shape appearance
+                updateShapeAppearance(shape);
+            });
+        }
+
+        function updateHorizontalMovement(shape, areaWidth, areaHeight) {
+            shape.x += 2;
+            if (shape.x > areaWidth - 30) {
+                shape.x = -30;
+                shape.y = Math.random() * (areaHeight - 30);
+            }
+        }
+
+        function updateVerticalDiagonalMovement(shape, areaWidth, areaHeight) {
+            shape.x += shape.vx;
+            shape.y += shape.vy;
+            
+            if (shape.x <= 0 || shape.x >= areaWidth - 30) {
+                shape.vx = -shape.vx;
+                shape.color = exercises[currentLevel].colors[Math.floor(Math.random() * exercises[currentLevel].colors.length)];
+            }
+            if (shape.y <= 0 || shape.y >= areaHeight - 30) {
+                shape.vy = -shape.vy;
+                shape.color = exercises[currentLevel].colors[Math.floor(Math.random() * exercises[currentLevel].colors.length)];
+            }
+        }
+
+        function updateCircularZigzagMovement(shape, areaWidth, areaHeight) {
+            shape.angle += 0.05;
+            const centerX = areaWidth / 2;
+            const centerY = areaHeight / 2;
+            const radius = Math.min(areaWidth, areaHeight) * 0.3;
+            
+            if (Math.random() < 0.3) {
+                // Circular motion
+                shape.x = centerX + Math.cos(shape.angle) * radius - 15;
+                shape.y = centerY + Math.sin(shape.angle) * radius - 15;
+            } else {
+                // Zigzag motion
+                shape.x += shape.vx * 1.5;
+                shape.y += Math.sin(shape.angle * 10) * 3;
+                
+                if (shape.x <= 0 || shape.x >= areaWidth - 30) {
+                    shape.vx = -shape.vx;
+                }
+                if (shape.y <= 0 || shape.y >= areaHeight - 30) {
+                    shape.y = Math.max(0, Math.min(areaHeight - 30, shape.y));
+                }
+            }
+            
+            // Color change
+            if (Math.random() < 0.02) {
+                shape.color = exercises[currentLevel].colors[Math.floor(Math.random() * exercises[currentLevel].colors.length)];
+            }
+        }
+
+        function updateMultipleDotsMovement(shape, areaWidth, areaHeight, exercise) {
+            shape.x += shape.vx * 1.2;
+            shape.y += shape.vy * 1.2;
+            
+            // Bounce off walls
+            if (shape.x <= 0 || shape.x >= areaWidth - 30) {
+                shape.vx = -shape.vx;
+            }
+            if (shape.y <= 0 || shape.y >= areaHeight - 30) {
+                shape.vy = -shape.vy;
+            }
+            
+            // Random color change
+            if (Math.random() < 0.01) {
+                shape.color = exercise.colors[Math.floor(Math.random() * exercise.colors.length)];
+            }
+        }
+
+        function updateDisappearingMovement(shape, areaWidth, areaHeight) {
+            // Movement
+            shape.x += shape.vx;
+            shape.y += shape.vy;
+            
+            // Bounce off walls
+            if (shape.x <= 0 || shape.x >= areaWidth - 30) {
+                shape.vx = -shape.vx;
+            }
+            if (shape.y <= 0 || shape.y >= areaHeight - 30) {
+                shape.vy = -shape.vy;
+            }
+            
+            // Disappearing/reappearing effect
+            if (Math.random() < 0.005) {
+                shape.opacity = shape.opacity > 0.1 ? 0 : 1;
+                if (shape.opacity === 1) {
+                    shape.x = Math.random() * (areaWidth - 30);
+                    shape.y = Math.random() * (areaHeight - 30);
+                }
+            }
+        }
+
+        function updateMorphingMovement(shape, areaWidth, areaHeight, exercise) {
+            // Complex movement pattern
+            shape.angle += 0.03;
+            shape.x += Math.cos(shape.angle) * 2 + shape.vx * 0.5;
+            shape.y += Math.sin(shape.angle) * 2 + shape.vy * 0.5;
+            
+            // Keep within bounds
+            if (shape.x <= 0 || shape.x >= areaWidth - 30) {
+                shape.vx = -shape.vx;
+                shape.x = Math.max(0, Math.min(areaWidth - 30, shape.x));
+            }
+            if (shape.y <= 0 || shape.y >= areaHeight - 30) {
+                shape.vy = -shape.vy;
+                shape.y = Math.max(0, Math.min(areaHeight - 30, shape.y));
+            }
+            
+            // Shape morphing
+            if (Math.random() < 0.02) {
+                shape.shapeType = exercise.shapes[Math.floor(Math.random() * exercise.shapes.length)];
+                shape.color = exercise.colors[Math.floor(Math.random() * exercise.colors.length)];
+            }
+        }
+
+        function updateChaosMovement(shape, areaWidth, areaHeight, exercise) {
+            // Chaotic movement
+            shape.vx += (Math.random() - 0.5) * 0.5;
+            shape.vy += (Math.random() - 0.5) * 0.5;
+            
+            // Limit velocity
+            shape.vx = Math.max(-5, Math.min(5, shape.vx));
+            shape.vy = Math.max(-5, Math.min(5, shape.vy));
+            
+            shape.x += shape.vx;
+            shape.y += shape.vy;
+            
+            // Bounce with random velocity change
+            if (shape.x <= 0 || shape.x >= areaWidth - 30) {
+                shape.vx = -shape.vx * (0.8 + Math.random() * 0.4);
+            }
+            if (shape.y <= 0 || shape.y >= areaHeight - 30) {
+                shape.vy = -shape.vy * (0.8 + Math.random() * 0.4);
+            }
+            
+            // Rapid changes
+            if (Math.random() < 0.05) {
+                shape.shapeType = exercise.shapes[Math.floor(Math.random() * exercise.shapes.length)];
+                shape.color = exercise.colors[Math.floor(Math.random() * exercise.colors.length)];
+                shape.size = 20 + Math.random() * 20;
+            }
+        }
+
+        function updateShapeAppearance(shape) {
+            const element = shape.element;
+            
+            // Update color
+            element.style.background = shape.color;
+            element.style.boxShadow = `0 0 20px ${shape.color}`;
+            
+            // Update size
+            element.style.width = shape.size + 'px';
+            element.style.height = shape.size + 'px';
+            
+            // Update shape type
+            element.className = `shape ${shape.shapeType}`;
+            
+            if (shape.shapeType === 'triangle') {
+                element.style.width = '0';
+                element.style.height = '0';
+                element.style.borderLeft = `${shape.size/2}px solid transparent`;
+                element.style.borderRight = `${shape.size/2}px solid transparent`;
+                element.style.borderBottom = `${shape.size}px solid ${shape.color}`;
+                element.style.background = 'transparent';
+            }
+        }
+
+        function startTimer() {
+            const exercise = exercises[currentLevel];
+            timerInterval = setInterval(() => {
+                seconds++;
+                updateTimerDisplay();
+                
+                if (seconds >= exercise.duration) {
+                    stopAnimation();
+                    showCompletionMessage();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function resetTimer() {
+            seconds = 0;
+            updateTimerDisplay();
+            clearInterval(timerInterval);
+        }
+
+        function clearExerciseArea() {
+            const area = document.getElementById('exercise-area');
+            area.innerHTML = '';
+            shapes = [];
+        }
+
+        function showCompletionMessage() {
+            const area = document.getElementById('exercise-area');
+            area.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--accent-color);">
+                    <h2>🎉 Exercise Complete!</h2>
+                    <p>Great job completing Level ${currentLevel}!</p>
+                    <p>Duration: ${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}</p>
+                    ${currentLevel < 7 ? `<button class="start-btn" onclick="startExercise(${currentLevel + 1})" style="margin-top: 20px;">Next Level</button>` : '<p>You\'ve completed all levels! 🏆</p>'}
+                </div>
+            `;
+        }
+
+        // Initialize theme
+        document.addEventListener('DOMContentLoaded', function() {
+            changeTheme('dark');
+            
+            // Add fade-in animation to cards
+            const cards = document.querySelectorAll('.level-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (animationRunning) {
+                    pauseAnimation();
+                } else {
+                    startAnimation();
+                }
+            } else if (e.code === 'KeyR') {
+                resetExercise();
+            } else if (e.code === 'KeyS') {
+                stopAnimation();
+            }
+        });
+
+        // Auto-start animation when exercise is loaded
+        function autoStartExercise() {
+            setTimeout(() => {
+                if (document.getElementById('exercise-display').classList.contains('active')) {
+                    startAnimation();
+                }
+            }, 1000);
+        }
+
+        // Add smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
