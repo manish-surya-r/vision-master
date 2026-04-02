@@ -3,1139 +3,258 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vision Master | Visual Processing Training</title>
+  <title>Vision Master</title>
   <style>
     :root {
-      --bg: #04100c;
-      --bg-soft: #0a1f18;
-      --panel: rgba(10, 31, 24, 0.75);
-      --text: #f9a126;
-      --muted: #f5d2a0;
-      --accent: #67d4f3;
-      --accent-2: #fda2a1;
-      --ok: #70f0a4;
-      --warn: #ffd166;
-      --danger: #ff8c8c;
-      --border: rgba(249, 161, 38, 0.28);
-      --shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      --bg: #f5f8ff;
+      --surface: #ffffff;
+      --surface-soft: #edf3ff;
+      --text: #1f2b40;
+      --muted: #5f6f8a;
+      --primary: #4f79ff;
+      --primary-soft: #dfe8ff;
+      --ok: #1c9a64;
+      --border: #d9e4f3;
+      --shadow: 0 14px 34px rgba(40, 70, 120, 0.1);
     }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, Segoe UI, system-ui, sans-serif; color: var(--text); background: radial-gradient(circle at top right, #eaf2ff, var(--bg)); }
+    .container { width: min(1120px, 92vw); margin: 0 auto; }
+    header { position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border); background: rgba(245,248,255,.92); backdrop-filter: blur(10px); }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.9rem 0; }
+    .brand h1 { margin:0; font-size:1.2rem; }
+    .brand p { margin:0; color:var(--muted); font-size:.9rem; }
+    nav { display:flex; flex-wrap:wrap; gap:.45rem; }
+    .btn { border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:999px; padding:.52rem .95rem; font-weight:600; cursor:pointer; }
+    .btn.primary,.btn.active { background:var(--primary); color:#fff; border-color:transparent; }
+    .btn:disabled { opacity:.55; cursor:not-allowed; }
+    .btn.block{ width:100%; margin-top:.45rem; }
+    .page { display:none; animation:fade .25s ease; }
+    .page.active { display:block; }
+    main { padding: 1.2rem 0 2rem; }
+    @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+    .card{ background:var(--surface); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); padding:1rem; }
+    .hero{ display:grid; grid-template-columns:1.1fr .9fr; gap:1rem; }
+    .hero h2{ margin:.1rem 0 .7rem; font-size:clamp(1.5rem,3vw,2.2rem); }
+    .hero p{ color:var(--muted); line-height:1.55; }
+    .stats{ display:grid; gap:.7rem; }
+    .stat{ border:1px solid var(--border); background:var(--surface-soft); border-radius:12px; padding:.72rem; }
+    .stat strong{ display:block; font-size:1.32rem; }
+    .stat span{ color:var(--muted); }
+    .section-head { display:flex; justify-content:space-between; gap:.8rem; align-items:center; margin-bottom:.8rem; }
+    .grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.82rem; }
+    .pill{ display:inline-block; border-radius:999px; background:var(--primary-soft); color:#2b4ea9; font-size:.8rem; font-weight:700; padding:.2rem .6rem; margin-bottom:.3rem; }
+    .exercise-card h3{ margin:.15rem 0 .4rem; }
+    .exercise-card p{ margin:.25rem 0; color:var(--muted); font-size:.93rem; }
 
-    body.light {
-      --bg: #fbfbfb;
-      --bg-soft: #f6f6f6;
-      --panel: rgba(255, 255, 255, 0.9);
-      --text: #033531;
-      --muted: #5f0926;
-      --accent: #46105d;
-      --accent-2: #322b0c;
-      --ok: #0f8f58;
-      --warn: #906d00;
-      --danger: #b53a32;
-      --border: rgba(3, 53, 49, 0.2);
-      --shadow: 0 16px 28px rgba(0, 0, 0, 0.08);
-    }
+    .session-layout{ display:grid; grid-template-columns:1fr 325px; gap:1rem; }
+    .toggle-row{ display:flex; flex-wrap:wrap; gap:.5rem; margin:.55rem 0; }
+    .zone{ border:1px dashed var(--border); border-radius:14px; min-height:270px; display:grid; place-items:center; background:linear-gradient(150deg,#f8fbff,#edf4ff); position:relative; overflow:hidden; }
+    .progress{ height:10px; border-radius:999px; background:#e6eefb; overflow:hidden; margin:.5rem 0 .65rem; }
+    .progress span{ display:block; height:100%; background:linear-gradient(90deg,#4f79ff,#6ab5ff); }
+    .cue{ min-height:24px; color:transparent; font-weight:700; }
+    .cue.show{ color:var(--ok); }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    .dot{ width:24px; height:24px; border-radius:50%; background:radial-gradient(circle at 30% 30%,#fff,#4f79ff); box-shadow:0 0 0 8px rgba(79,121,255,.14); position:absolute; }
+    .bead{ width:18px;height:18px;border-radius:50%; position:absolute; }
+    .target-char{ font-size:2.7rem; font-weight:800; letter-spacing:.06em; }
+    .ring{ position:absolute; width:88px; height:88px; border-radius:50%; border:4px solid rgba(79,121,255,.5); opacity:0; transition:opacity .2s ease; }
+    .flash{ position:absolute; width:44px; height:44px; border-radius:50%; border:3px solid #4f79ff; opacity:0; }
 
-    body {
-      font-family: Inter, Segoe UI, system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
-      background: linear-gradient(135deg, var(--bg), var(--bg-soft));
-      color: var(--text);
-    }
+    .rest-overlay{ position:fixed; inset:0; display:none; place-items:center; background:rgba(20,30,50,.72); z-index:100; }
+    .rest-overlay.active{ display:grid; }
 
-    .container { width: min(1180px, 92vw); margin: 0 auto; }
+    .symptoms{ display:grid; gap:.5rem; margin-top:.75rem; }
+    .symptoms label{ display:grid; grid-template-columns:100px 1fr 26px; align-items:center; gap:.6rem; }
+    .metrics{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.7rem; margin-bottom:.8rem; }
+    .metric{ border:1px solid var(--border); background:var(--surface-soft); border-radius:12px; padding:.7rem; }
+    .metric strong{ display:block; font-size:1.34rem; }
+    .feedback{ list-style:none; margin:0; padding:0; display:grid; gap:.45rem; }
+    .feedback li{ display:flex; justify-content:space-between; background:#f8fbff; border-radius:10px; padding:.5rem .65rem; }
+    footer{ color:var(--muted); padding:.8rem 0 1.8rem; font-size:.9rem; }
 
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-      background: color-mix(in srgb, var(--bg), transparent 30%);
-    }
-
-    .header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.9rem 0;
-      gap: 1rem;
-    }
-
-    .brand h1 { font-size: clamp(1.2rem, 2.5vw, 1.6rem); }
-    .brand p { color: var(--muted); font-size: 0.9rem; }
-
-    .theme-toggle {
-      display: inline-flex;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: var(--panel);
-      padding: 0.2rem;
-      gap: 0.25rem;
-    }
-
-    .theme-toggle button {
-      border: 0;
-      background: transparent;
-      color: var(--text);
-      font-weight: 600;
-      border-radius: 999px;
-      padding: 0.35rem 0.75rem;
-      cursor: pointer;
-    }
-
-    .theme-toggle button.active {
-      background: var(--accent);
-      color: #081419;
-    }
-
-    main { padding: 1.25rem 0 2rem; }
-
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-    }
-
-    .about {
-      padding: 1rem 1.1rem;
-      margin-bottom: 1rem;
-      display: grid;
-      gap: 0.55rem;
-    }
-
-    .about p { color: var(--muted); }
-    .about .badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-
-    .badge {
-      font-size: 0.82rem;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 0.25rem 0.65rem;
-      color: var(--muted);
-    }
-
-    .levels-top {
-      display: grid;
-      gap: 0.9rem;
-      padding: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .level-tabs {
-      display: grid;
-      grid-template-columns: repeat(9, minmax(70px, 1fr));
-      gap: 0.45rem;
-    }
-
-    .tab {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.5rem 0.25rem;
-      text-align: center;
-      font-weight: 700;
-      cursor: pointer;
-      background: color-mix(in srgb, var(--bg-soft), transparent 42%);
-      transition: 0.2s ease;
-      font-size: 0.84rem;
-    }
-
-    .tab:hover { transform: translateY(-1px); border-color: var(--accent); }
-    .tab.active { border-color: var(--accent); outline: 1px solid var(--accent); }
-    .tab.locked { opacity: 0.45; cursor: not-allowed; }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1.3fr 0.9fr;
-      gap: 1rem;
-    }
-
-    .trainer, .insights { padding: 1rem; }
-
-    .trainer h2 { margin-bottom: 0.35rem; }
-    .trainer .description { color: var(--muted); margin-bottom: 0.8rem; }
-
-    .meta {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.45rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .meta div {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.45rem;
-      text-align: center;
-      font-size: 0.82rem;
-      color: var(--muted);
-    }
-
-    .meta strong {
-      display: block;
-      font-size: 0.98rem;
-      color: var(--text);
-    }
-
-    .arena {
-      height: 390px;
-      border-radius: 12px;
-      border: 2px solid var(--border);
-      position: relative;
-      overflow: hidden;
-      background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--bg-soft), #000 12%), color-mix(in srgb, var(--bg), #000 22%));
-      margin-bottom: 0.75rem;
-    }
-
-    .shape { position: absolute; transition: transform 0.04s linear; }
-    .dot { width: 20px; height: 20px; border-radius: 50%; }
-    .triangle {
-      width: 0;
-      height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-bottom: 20px solid;
-    }
-
-    .center-dot {
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: var(--accent);
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 12px var(--accent);
-    }
-
-    .controls { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center; }
-
-    .controls button, .controls input {
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      border-radius: 9px;
-      padding: 0.45rem 0.65rem;
-      font-weight: 600;
-    }
-
-    .controls button { cursor: pointer; }
-    .controls button:hover { border-color: var(--accent); color: var(--accent); }
-
-    .status { margin-top: 0.65rem; color: var(--muted); min-height: 1.5rem; }
-
-    .insights {
-      display: grid;
-      gap: 0.8rem;
-      align-content: start;
-    }
-
-    .card {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0.8rem;
-      background: color-mix(in srgb, var(--bg-soft), transparent 32%);
-    }
-
-    .card h3 { margin-bottom: 0.4rem; }
-    .card ul { margin-left: 1rem; color: var(--muted); display: grid; gap: 0.2rem; }
-
-    .score-grid { display: grid; gap: 0.35rem; }
-
-    .score-item {
-      display: flex;
-      justify-content: space-between;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.35rem 0.5rem;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .score-item strong { color: var(--text); }
-    .small { font-size: 0.84rem; color: var(--muted); }
-
-    @media (max-width: 1040px) {
-      .level-tabs { grid-template-columns: repeat(5, minmax(70px, 1fr)); }
-      .layout { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 620px) {
-      .level-tabs { grid-template-columns: repeat(3, minmax(70px, 1fr)); }
-      .meta { grid-template-columns: repeat(2, 1fr); }
-    }
+    @media (max-width:960px){ .hero,.grid,.session-layout,.metrics{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container header-row">
-      <div class="brand">
-        <h1>Vision Master</h1>
-        <p>Game-style visual processing & attention trainer</p>
-      </div>
-      <div class="theme-toggle">
-        <button data-theme="dark" class="active">Dark</button>
-        <button data-theme="light">Light</button>
-      </div>
-    </div>
-  </header>
-
-  <main class="container">
-    <section class="panel about" id="about-doc">
-      <h2>About this website</h2>
-      <p>
-        Vision Master is a structured visual-processing training platform. It is designed to challenge focus, peripheral awareness, memory, and reaction under time pressure through progressive game-like levels.
-      </p>
-      <p class="small"><strong>Important:</strong> this platform does <em>not</em> claim medical eyesight improvement. It is for training visual processing and attention skills.</p>
-      <div class="badge-row">
-        <span class="badge">Minimal UI</span>
-        <span class="badge">Progressive unlocks</span>
-        <span class="badge">Streak tracking</span>
-        <span class="badge">Daily challenge</span>
-      </div>
-    </section>
-
-    <section class="panel levels-top">
-      <h3>Levels</h3>
-      <div id="level-tabs" class="level-tabs"></div>
-    </section>
-
-    <section class="layout">
-      <section class="panel trainer">
-        <h2 id="level-title">Level 1</h2>
-        <p id="level-description" class="description"></p>
-        <div class="meta">
-          <div><strong id="difficulty">Medium</strong>Difficulty</div>
-          <div><strong id="duration">60s</strong>Timer</div>
-          <div><strong id="targets">0</strong>Targets</div>
-          <div><strong id="streak">0</strong>Streak</div>
-        </div>
-
-        <div id="arena" class="arena"></div>
-
-        <div class="controls">
-          <button id="start-btn">▶ Start</button>
-          <button id="pause-btn">⏸ Pause</button>
-          <button id="reset-btn">↺ Reset</button>
-          <button id="event-btn">Seen</button>
-          <input id="answer-input" type="text" placeholder="answer / count / position" />
-          <button id="submit-btn">Submit</button>
-          <button id="sound-btn">🔈 Sound Off</button>
-        </div>
-        <p id="status" class="status">Select a level and press Start.</p>
-      </section>
-
-      <aside class="panel insights">
-        <section class="card">
-          <h3>Instructions</h3>
-          <ul id="instructions"></ul>
-        </section>
-
-        <section class="card">
-          <h3>Tests in this level</h3>
-          <ul id="tests"></ul>
-        </section>
-
-        <section class="card">
-          <h3>Scoring System</h3>
-          <div class="score-grid" id="score-grid"></div>
-        </section>
-
-        <section class="card">
-          <h3>Daily Challenge</h3>
-          <p id="daily" class="small">Complete 3 levels with at least 70% accuracy.</p>
-        </section>
-
-        <section class="card">
-          <h3>Your visual profile</h3>
-          <p id="profile" class="small">Finish levels to generate strengths and weak areas.</p>
-        </section>
-      </aside>
-    </section>
-  </main>
-
-  <script>
-    const LEVELS = [
-      {
-        id: 1,
-        name: 'Multi-Object Focus',
-        difficulty: 'Medium',
-        duration: 60,
-        targets: '5-8 objects',
-        description: 'Track the blue triangle while counting how many times the red circle flashes.',
-        instructions: [
-          'Track the blue triangle continuously.',
-          'Count each flash from the red circle.',
-          'At the end, submit flash count and final triangle zone (left/center/right).'
-        ],
-        tests: ['Divided attention', 'Tracking + counting'],
-        mode: 'multiFocus'
-      },
-      {
-        id: 2,
-        name: 'Peripheral Detection',
-        difficulty: 'Medium+',
-        duration: 55,
-        targets: 'Center + edge stimuli',
-        description: 'Keep eyes on center dot. React when edge target appears.',
-        instructions: [
-          'Keep gaze fixed on center dot.',
-          'Press Seen when square appears on requested edge.',
-          'Respond quickly and accurately.'
-        ],
-        tests: ['Peripheral awareness', 'Reaction time'],
-        mode: 'peripheral'
-      },
-      {
-        id: 3,
-        name: 'Rapid Pattern Recall',
-        difficulty: 'High',
-        duration: 65,
-        targets: '4x4 pattern grid',
-        description: 'Memorize highlighted pattern, then recreate it after hide.',
-        instructions: [
-          'Observe the pattern for ~1.5 seconds.',
-          'Recreate by clicking tiles after pattern hides.',
-          'Submit when done.'
-        ],
-        tests: ['Visual memory', 'Spatial recall'],
-        mode: 'patternRecall'
-      },
-      {
-        id: 4,
-        name: 'Visual Noise Filtering',
-        difficulty: 'High+',
-        duration: 70,
-        targets: 'Noise field',
-        description: 'Find all instances of A rotated 90° among similar distractors.',
-        instructions: [
-          'Scan clutter quickly.',
-          'Count only rotated A symbols.',
-          'Submit total count.'
-        ],
-        tests: ['Selective attention', 'Detail recognition'],
-        mode: 'noiseFilter'
-      },
-      {
-        id: 5,
-        name: 'Motion Prediction',
-        difficulty: 'Advanced',
-        duration: 70,
-        targets: 'Moving ball',
-        description: 'Ball moves then disappears—predict where it will land.',
-        instructions: [
-          'Track the moving ball.',
-          'After disappearance, click expected landing zone.',
-          'Higher precision = higher score.'
-        ],
-        tests: ['Motion tracking', 'Prediction'],
-        mode: 'motionPrediction'
-      },
-      {
-        id: 6,
-        name: 'Eye-Hand Reaction Mapping',
-        difficulty: 'Advanced+',
-        duration: 75,
-        targets: 'Rule-based stimuli',
-        description: 'Red = click, Blue = double click, Green = ignore.',
-        instructions: [
-          'Follow rule mapping exactly.',
-          'Respond to red/blue quickly.',
-          'Do not react to green.'
-        ],
-        tests: ['Reaction speed', 'Rule switching'],
-        mode: 'reactionMap'
-      },
-      {
-        id: 7,
-        name: 'Dual Task Overload',
-        difficulty: 'Very Advanced',
-        duration: 90,
-        targets: 'Tracking + math',
-        description: 'Track motion and solve quick math prompts together.',
-        instructions: [
-          'Keep tracking moving target.',
-          'Answer mini math prompts in input.',
-          'Maintain both accuracy streams.'
-        ],
-        tests: ['Cognitive load handling', 'Attention splitting'],
-        mode: 'dualTask'
-      },
-      {
-        id: 8,
-        name: 'Micro-Detail Discrimination',
-        difficulty: 'Very Advanced+',
-        duration: 75,
-        targets: 'Image pair',
-        description: 'Find 3 tiny differences in 5 seconds per round.',
-        instructions: [
-          'Compare left and right patterns quickly.',
-          'Click suspected differences.',
-          'Aim to find all three differences each round.'
-        ],
-        tests: ['High visual acuity', 'Fine detail detection'],
-        mode: 'microDetail'
-      },
-      {
-        id: 9,
-        name: 'Flicker Fusion Challenge',
-        difficulty: 'Elite Advanced',
-        duration: 80,
-        targets: 'Rapid flicker stream',
-        description: 'Detect odd frame in high-speed flicker sequence.',
-        instructions: [
-          'Watch central flicker block.',
-          'Press Seen when odd frame appears.',
-          'Minimize false alarms.'
-        ],
-        tests: ['Processing speed', 'Temporal resolution'],
-        mode: 'flickerFusion'
-      }
-    ];
-
-    const score = {
-      peripheral: 50,
-      focus: 50,
-      reaction: 50,
-      memory: 50
-    };
-
-    const state = {
-      levelIndex: 0,
-      unlocked: 1,
-      running: false,
-      paused: false,
-      soundOn: false,
-      timer: 0,
-      startStamp: 0,
-      raf: null,
-      streak: 0,
-      levelData: {}
-    };
-
-    const arena = document.getElementById('arena');
-    const statusEl = document.getElementById('status');
-    const tabsEl = document.getElementById('level-tabs');
-    const answerInput = document.getElementById('answer-input');
-
-    function beep(freq = 680, dur = 0.06) {
-      if (!state.soundOn) return;
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.frequency.value = freq;
-      osc.type = 'sine';
-      gain.gain.value = 0.03;
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + dur);
-    }
-
-    function renderTabs() {
-      tabsEl.innerHTML = '';
-      LEVELS.forEach((level, i) => {
-        const b = document.createElement('button');
-        const locked = i + 1 > state.unlocked;
-        b.className = `tab ${i === state.levelIndex ? 'active' : ''} ${locked ? 'locked' : ''}`;
-        b.textContent = `L${level.id}`;
-        b.title = level.name;
-        b.addEventListener('click', () => {
-          if (locked) {
-            setStatus('Complete previous levels to unlock.', 'warn');
-            return;
-          }
-          selectLevel(i);
-        });
-        tabsEl.appendChild(b);
-      });
-    }
-
-    function renderScore() {
-      const grid = document.getElementById('score-grid');
-      grid.innerHTML = `
-        <div class="score-item"><span>👁️ Peripheral Score</span><strong>${Math.round(score.peripheral)}</strong></div>
-        <div class="score-item"><span>🎯 Focus Score</span><strong>${Math.round(score.focus)}</strong></div>
-        <div class="score-item"><span>⚡ Reaction Time</span><strong>${Math.round(score.reaction)}</strong></div>
-        <div class="score-item"><span>🧠 Memory Index</span><strong>${Math.round(score.memory)}</strong></div>
-      `;
-    }
-
-    function renderProfile() {
-      const entries = [
-        ['Tracking / Focus', score.focus],
-        ['Peripheral Awareness', score.peripheral],
-        ['Reaction', score.reaction],
-        ['Memory', score.memory]
-      ].sort((a, b) => b[1] - a[1]);
-
-      const strong = entries[0][0];
-      const weak = entries[entries.length - 1][0];
-      document.getElementById('profile').textContent = `Strong: ${strong}. Needs work: ${weak}. Keep training with unlock progression and streak consistency.`;
-    }
-
-    function setStatus(msg, type = 'default') {
-      const colorMap = { default: 'var(--muted)', ok: 'var(--ok)', warn: 'var(--warn)', danger: 'var(--danger)' };
-      statusEl.style.color = colorMap[type] || colorMap.default;
-      statusEl.textContent = msg;
-    }
-
-    function selectLevel(index) {
-      state.levelIndex = index;
-      stopLevel();
-      resetArena();
-
-      const level = LEVELS[index];
-      document.getElementById('level-title').textContent = `Level ${level.id}: ${level.name}`;
-      document.getElementById('level-description').textContent = level.description;
-      document.getElementById('difficulty').textContent = level.difficulty;
-      document.getElementById('duration').textContent = `${level.duration}s`;
-      document.getElementById('targets').textContent = level.targets;
-      document.getElementById('streak').textContent = state.streak;
-
-      renderList('instructions', level.instructions);
-      renderList('tests', level.tests);
-      renderTabs();
-      initializeLevelState(level.mode);
-      setStatus('Level loaded. Press Start.', 'default');
-    }
-
-    function renderList(id, items) {
-      const el = document.getElementById(id);
-      el.innerHTML = '';
-      items.forEach((item) => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        el.appendChild(li);
-      });
-    }
-
-    function resetArena() {
-      arena.innerHTML = '';
-    }
-
-    function initializeLevelState(mode) {
-      state.levelData = {
-        mode,
-        flashCount: 0,
-        correctEdgeHits: 0,
-        reactionSamples: [],
-        promptEdge: 'left',
-        pattern: [],
-        userPattern: new Set(),
-        noiseCount: 0,
-        predictionTargetX: 0,
-        mapColor: '',
-        ruleHits: 0,
-        ruleMiss: 0,
-        mathAnswer: 0,
-        detailFound: 0,
-        oddFrameVisible: false,
-        falseAlarm: 0,
-        shapes: []
-      };
-
-      if (mode === 'peripheral') {
-        const center = document.createElement('div');
-        center.className = 'center-dot';
-        arena.appendChild(center);
-      }
-      if (mode === 'patternRecall') drawPatternGrid(true);
-      if (mode === 'noiseFilter') drawNoiseField();
-      if (mode === 'microDetail') drawMicroDetail();
-      if (mode === 'flickerFusion') drawFlickerPanel();
-    }
-
-    function startLevel() {
-      if (state.running) return;
-      state.running = true;
-      state.paused = false;
-      state.startStamp = performance.now() - state.timer * 1000;
-      requestAnimationFrame(loop);
-      setStatus('Training running...', 'ok');
-    }
-
-    function pauseLevel() {
-      if (!state.running) return;
-      state.running = false;
-      state.paused = true;
-      cancelAnimationFrame(state.raf);
-      setStatus('Paused', 'warn');
-    }
-
-    function stopLevel() {
-      state.running = false;
-      state.paused = false;
-      state.timer = 0;
-      cancelAnimationFrame(state.raf);
-    }
-
-    function resetLevel() {
-      stopLevel();
-      selectLevel(state.levelIndex);
-    }
-
-    function levelCompleted() {
-      const idx = state.levelIndex;
-      const level = LEVELS[idx];
-      const accuracy = evaluateLevelScore();
-
-      state.streak = accuracy >= 60 ? state.streak + 1 : 0;
-      document.getElementById('streak').textContent = state.streak;
-
-      if (idx + 2 > state.unlocked && idx + 1 < LEVELS.length) state.unlocked = idx + 2;
-      renderTabs();
-
-      setStatus(`Level ${level.id} complete • Accuracy ${accuracy}%`, accuracy >= 60 ? 'ok' : 'warn');
-      updateDailyChallenge();
-      renderScore();
-      renderProfile();
-      stopLevel();
-    }
-
-    function updateDailyChallenge() {
-      const text = state.streak >= 3
-        ? '✅ Daily challenge complete: 3-level streak above 70%.'
-        : `Current streak: ${state.streak}. Reach streak 3 with >=70% accuracy.`;
-      document.getElementById('daily').textContent = text;
-    }
-
-    function evaluateLevelScore() {
-      const d = state.levelData;
-      const mode = d.mode;
-      let acc = 65;
-
-      if (mode === 'multiFocus') {
-        const user = parseInt(answerInput.value, 10);
-        const diff = Math.abs((Number.isNaN(user) ? 0 : user) - d.flashCount);
-        acc = Math.max(35, 100 - diff * 15);
-        score.focus += acc * 0.08;
-        score.memory += acc * 0.05;
-      } else if (mode === 'peripheral') {
-        const avgRt = d.reactionSamples.length ? d.reactionSamples.reduce((a, b) => a + b, 0) / d.reactionSamples.length : 900;
-        acc = Math.min(100, Math.max(40, d.correctEdgeHits * 8 + (1200 - avgRt) / 8));
-        score.peripheral += acc * 0.08;
-        score.reaction += acc * 0.06;
-      } else if (mode === 'patternRecall') {
-        const overlap = [...d.userPattern].filter((x) => d.pattern.includes(x)).length;
-        acc = Math.min(100, overlap * 25);
-        score.memory += acc * 0.1;
-      } else if (mode === 'noiseFilter') {
-        const user = parseInt(answerInput.value, 10);
-        acc = Math.max(30, 100 - Math.abs((Number.isNaN(user) ? 0 : user) - d.noiseCount) * 18);
-        score.focus += acc * 0.08;
-      } else if (mode === 'motionPrediction') {
-        const user = parseFloat(answerInput.value);
-        acc = Number.isNaN(user) ? 40 : Math.max(35, 100 - Math.abs(user - d.predictionTargetX) * 2);
-        score.focus += acc * 0.05;
-        score.memory += acc * 0.04;
-      } else if (mode === 'reactionMap') {
-        const total = d.ruleHits + d.ruleMiss;
-        acc = total === 0 ? 40 : Math.round((d.ruleHits / total) * 100);
-        score.reaction += acc * 0.1;
-      } else if (mode === 'dualTask') {
-        const ans = parseInt(answerInput.value, 10);
-        acc = ans === d.mathAnswer ? 90 : 55;
-        score.focus += acc * 0.05;
-        score.reaction += acc * 0.05;
-      } else if (mode === 'microDetail') {
-        acc = 35 + d.detailFound * 20;
-        score.memory += acc * 0.05;
-        score.focus += acc * 0.04;
-      } else if (mode === 'flickerFusion') {
-        acc = Math.max(35, 95 - d.falseAlarm * 12 + (d.oddFrameVisible ? 5 : 0));
-        score.reaction += acc * 0.08;
-        score.peripheral += acc * 0.05;
-      }
-
-      Object.keys(score).forEach((k) => score[k] = Math.max(0, Math.min(100, score[k])));
-      return Math.round(Math.max(20, Math.min(100, acc)));
-    }
-
-    function loop(ts) {
-      if (!state.running) return;
-      const level = LEVELS[state.levelIndex];
-      state.timer = (ts - state.startStamp) / 1000;
-
-      runMode(level.mode, ts);
-      setStatus(`Running • ${state.timer.toFixed(1)}s / ${level.duration}s`, 'default');
-
-      if (state.timer >= level.duration) {
-        levelCompleted();
-        return;
-      }
-
-      state.raf = requestAnimationFrame(loop);
-    }
-
-    function runMode(mode, ts) {
-      switch (mode) {
-        case 'multiFocus': runMultiFocus(ts); break;
-        case 'peripheral': runPeripheral(ts); break;
-        case 'patternRecall': runPatternRecall(ts); break;
-        case 'noiseFilter': break;
-        case 'motionPrediction': runMotionPrediction(ts); break;
-        case 'reactionMap': runReactionMap(ts); break;
-        case 'dualTask': runDualTask(ts); break;
-        case 'microDetail': break;
-        case 'flickerFusion': runFlickerFusion(ts); break;
-      }
-    }
-
-    function ensureShapes(count, includeBlueTriangle = false) {
-      if (state.levelData.shapes.length) return;
-      const w = arena.clientWidth;
-      const h = arena.clientHeight;
-      for (let i = 0; i < count; i++) {
-        const el = document.createElement('div');
-        if (includeBlueTriangle && i === 0) {
-          el.className = 'shape triangle';
-          el.style.color = '#67d4f3';
-          el.style.borderBottomColor = '#67d4f3';
-        } else {
-          el.className = 'shape dot';
-          const color = i === 1 ? '#ff5a5a' : ['#d4d4d4', '#c890e3', '#f5f5f5', '#67d4f3'][i % 4];
-          el.style.background = color;
-        }
-
-        arena.appendChild(el);
-        state.levelData.shapes.push({
-          el,
-          x: Math.random() * (w - 30),
-          y: Math.random() * (h - 30),
-          vx: (Math.random() - 0.5) * 3.2,
-          vy: (Math.random() - 0.5) * 3.2,
-          isRed: i === 1
-        });
-      }
-    }
-
-    function runMultiFocus(ts) {
-      ensureShapes(7, true);
-      const w = arena.clientWidth;
-      const h = arena.clientHeight;
-      state.levelData.shapes.forEach((s) => {
-        s.x += s.vx; s.y += s.vy;
-        if (s.x <= 0 || s.x >= w - 25) s.vx *= -1;
-        if (s.y <= 0 || s.y >= h - 25) s.vy *= -1;
-
-        if (s.isRed && Math.random() < 0.015) {
-          s.el.style.opacity = s.el.style.opacity === '0.2' ? '1' : '0.2';
-          if (s.el.style.opacity === '0.2') {
-            state.levelData.flashCount += 1;
-            beep(820, 0.04);
-          }
-        }
-        s.el.style.transform = `translate(${s.x}px, ${s.y}px)`;
-      });
-    }
-
-    function runPeripheral(ts) {
-      if (!state.levelData.nextEdgeAt) state.levelData.nextEdgeAt = ts + 500;
-      if (ts > state.levelData.nextEdgeAt) {
-        const edges = ['left', 'right', 'top', 'bottom'];
-        state.levelData.promptEdge = edges[Math.floor(Math.random() * edges.length)];
-        state.levelData.stimulusAt = ts;
-        state.levelData.stimulusVisibleUntil = ts + 400 + Math.random() * 300;
-        setStatus(`Peripheral cue: watch ${state.levelData.promptEdge}`, 'default');
-        state.levelData.nextEdgeAt = ts + 1700;
-      }
-
-      let box = document.getElementById('peripheral-box');
-      if (!box) {
-        box = document.createElement('div');
-        box.id = 'peripheral-box';
-        box.className = 'shape dot';
-        box.style.width = '22px';
-        box.style.height = '22px';
-        box.style.background = '#67d4f3';
-        arena.appendChild(box);
-      }
-
-      if (state.levelData.stimulusVisibleUntil && ts < state.levelData.stimulusVisibleUntil) {
-        const pos = {
-          left: [24, arena.clientHeight / 2],
-          right: [arena.clientWidth - 45, arena.clientHeight / 2],
-          top: [arena.clientWidth / 2, 20],
-          bottom: [arena.clientWidth / 2, arena.clientHeight - 40]
-        }[state.levelData.promptEdge];
-        box.style.display = 'block';
-        box.style.transform = `translate(${pos[0]}px, ${pos[1]}px)`;
-      } else {
-        box.style.display = 'none';
-      }
-    }
-
-    function drawPatternGrid(showPattern) {
-      arena.innerHTML = '';
-      const grid = document.createElement('div');
-      grid.style.display = 'grid';
-      grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
-      grid.style.gap = '6px';
-      grid.style.padding = '20px';
-      grid.style.height = '100%';
-      const pattern = [1, 3, 8, 10];
-      state.levelData.pattern = pattern;
-
-      for (let i = 0; i < 16; i++) {
-        const cell = document.createElement('button');
-        cell.type = 'button';
-        cell.style.border = '1px solid var(--border)';
-        cell.style.background = showPattern && pattern.includes(i) ? 'var(--accent)' : 'transparent';
-        cell.style.borderRadius = '8px';
-        cell.style.cursor = 'pointer';
-        cell.addEventListener('click', () => {
-          if (!state.running) return;
-          if (state.levelData.userPattern.has(i)) {
-            state.levelData.userPattern.delete(i);
-            cell.style.background = 'transparent';
-          } else {
-            state.levelData.userPattern.add(i);
-            cell.style.background = 'var(--accent-2)';
-          }
-        });
-        grid.appendChild(cell);
-      }
-      arena.appendChild(grid);
-      if (showPattern) setTimeout(() => drawPatternGrid(false), 1500);
-    }
-
-    function runPatternRecall() {}
-
-    function drawNoiseField() {
-      arena.innerHTML = '';
-      const pool = ['A', 'V', 'Λ', '∆', 'H', 'R'];
-      let targetCount = 0;
-      for (let i = 0; i < 180; i++) {
-        const el = document.createElement('span');
-        el.textContent = pool[Math.floor(Math.random() * pool.length)];
-        el.style.position = 'absolute';
-        el.style.left = `${Math.random() * (arena.clientWidth - 16)}px`;
-        el.style.top = `${Math.random() * (arena.clientHeight - 16)}px`;
-        el.style.fontSize = `${12 + Math.random() * 14}px`;
-        el.style.opacity = `${0.45 + Math.random() * 0.5}`;
-
-        if (Math.random() < 0.14) {
-          el.textContent = 'A';
-          el.style.transform = 'rotate(90deg)';
-          targetCount += 1;
-        }
-        arena.appendChild(el);
-      }
-      state.levelData.noiseCount = targetCount;
-    }
-
-    function runMotionPrediction(ts) {
-      let ball = document.getElementById('prediction-ball');
-      if (!ball) {
-        ball = document.createElement('div');
-        ball.id = 'prediction-ball';
-        ball.className = 'shape dot';
-        ball.style.background = '#67d4f3';
-        arena.appendChild(ball);
-        state.levelData.ball = { x: 20, y: 120, vx: 3.2, vy: 2.2, hidden: false };
-      }
-      const b = state.levelData.ball;
-      if (!b.hidden) {
-        b.x += b.vx; b.y += b.vy;
-        if (b.x < 0 || b.x > arena.clientWidth - 20) b.vx *= -1;
-        if (b.y < 0 || b.y > arena.clientHeight - 20) b.vy *= -1;
-        ball.style.transform = `translate(${b.x}px, ${b.y}px)`;
-      }
-      if (ts - state.startStamp > 35000 && !b.hidden) {
-        b.hidden = true;
-        state.levelData.predictionTargetX = Math.max(0, Math.min(100, (b.x / arena.clientWidth) * 100));
-        ball.style.display = 'none';
-        setStatus('Ball hidden. Enter predicted X position (0-100).', 'warn');
-      }
-    }
-
-    function runReactionMap(ts) {
-      let s = document.getElementById('map-stimulus');
-      if (!s) {
-        s = document.createElement('div');
-        s.id = 'map-stimulus';
-        s.className = 'shape dot';
-        s.style.width = '46px';
-        s.style.height = '46px';
-        s.style.left = '50%';
-        s.style.top = '50%';
-        s.style.transform = 'translate(-50%, -50%)';
-        arena.appendChild(s);
-      }
-
-      if (!state.levelData.nextMapAt) state.levelData.nextMapAt = ts + 900;
-      if (ts > state.levelData.nextMapAt) {
-        const colors = ['red', 'blue', 'green'];
-        state.levelData.mapColor = colors[Math.floor(Math.random() * colors.length)];
-        s.style.background = state.levelData.mapColor;
-        state.levelData.nextMapAt = ts + 1000;
-      }
-    }
-
-    function runDualTask(ts) {
-      ensureShapes(1, true);
-      const s = state.levelData.shapes[0];
-      const w = arena.clientWidth;
-      const h = arena.clientHeight;
-      s.x += s.vx * 1.8;
-      s.y += s.vy * 1.3;
-      if (s.x < 0 || s.x > w - 20) s.vx *= -1;
-      if (s.y < 0 || s.y > h - 20) s.vy *= -1;
-      s.el.style.transform = `translate(${s.x}px, ${s.y}px)`;
-
-      if (!state.levelData.nextMathAt || ts > state.levelData.nextMathAt) {
-        const a = 2 + Math.floor(Math.random() * 9);
-        const b = 2 + Math.floor(Math.random() * 9);
-        state.levelData.mathAnswer = a + b;
-        setStatus(`Dual task: keep tracking + solve ${a} + ${b}`, 'default');
-        state.levelData.nextMathAt = ts + 6500;
-      }
-    }
-
-    function drawMicroDetail() {
-      arena.innerHTML = '';
-      const left = document.createElement('div');
-      const right = document.createElement('div');
-      [left, right].forEach((box, idx) => {
-        box.style.position = 'absolute';
-        box.style.width = '44%';
-        box.style.height = '84%';
-        box.style.top = '8%';
-        box.style.left = idx === 0 ? '4%' : '52%';
-        box.style.border = '1px solid var(--border)';
-        box.style.borderRadius = '10px';
-        box.style.background = 'color-mix(in srgb, var(--bg-soft), transparent 20%)';
-        arena.appendChild(box);
-      });
-
-      const diffs = [{ x: 18, y: 24 }, { x: 56, y: 41 }, { x: 74, y: 70 }];
-      diffs.forEach((d) => {
-        const marker = document.createElement('button');
-        marker.type = 'button';
-        marker.className = 'shape dot';
-        marker.style.width = '10px'; marker.style.height = '10px';
-        marker.style.background = '#67d4f3';
-        marker.style.left = `${52 + d.x * 0.4}%`;
-        marker.style.top = `${8 + d.y * 0.8}%`;
-        marker.style.opacity = '0.4';
-        marker.addEventListener('click', () => {
-          state.levelData.detailFound += 1;
-          marker.style.opacity = '1';
-          marker.style.background = '#70f0a4';
-          beep(720, 0.04);
-        });
-        arena.appendChild(marker);
-      });
-    }
-
-    function drawFlickerPanel() {
-      arena.innerHTML = '';
-      const panel = document.createElement('div');
-      panel.id = 'flicker-panel';
-      panel.style.position = 'absolute';
-      panel.style.width = '120px';
-      panel.style.height = '120px';
-      panel.style.left = 'calc(50% - 60px)';
-      panel.style.top = 'calc(50% - 60px)';
-      panel.style.borderRadius = '12px';
-      panel.style.background = '#67d4f3';
-      arena.appendChild(panel);
-    }
-
-    function runFlickerFusion(ts) {
-      const panel = document.getElementById('flicker-panel');
-      if (!panel) return;
-      const odd = Math.sin(ts / 70) > 0.89;
-      state.levelData.oddFrameVisible = odd;
-      panel.style.background = odd ? '#ff6b6b' : (Math.sin(ts / 45) > 0 ? '#67d4f3' : '#c890e3');
-    }
-
-    function handleEventButton() {
-      const mode = state.levelData.mode;
-      if (!state.running) return;
-
-      if (mode === 'peripheral' && state.levelData.stimulusAt) {
-        const rt = performance.now() - state.levelData.stimulusAt;
-        state.levelData.correctEdgeHits += 1;
-        state.levelData.reactionSamples.push(rt);
-        setStatus(`Edge seen in ${Math.round(rt)} ms`, 'ok');
-        beep(650, 0.03);
-      } else if (mode === 'flickerFusion') {
-        if (state.levelData.oddFrameVisible) {
-          setStatus('Correct odd-frame detection!', 'ok');
-          beep(780, 0.03);
-        } else {
-          state.levelData.falseAlarm += 1;
-          setStatus('False alarm. Wait for odd frame.', 'danger');
-        }
-      }
-    }
-
-    function handleSubmit() {
-      if (!state.running && state.timer === 0) {
-        setStatus('Start a level before submitting.', 'warn');
-        return;
-      }
-      setStatus('Answer recorded.', 'ok');
-      beep(600, 0.02);
-    }
-
-    function handleRuleClick(type) {
-      if (!state.running || state.levelData.mode !== 'reactionMap') return;
-      const c = state.levelData.mapColor;
-      const good = (c === 'red' && type === 'click') || (c === 'blue' && type === 'dbl') || (c === 'green' && type === 'ignore');
-      if (good) {
-        state.levelData.ruleHits += 1;
-        setStatus('Correct mapping.', 'ok');
-      } else {
-        state.levelData.ruleMiss += 1;
-        setStatus('Wrong mapping.', 'danger');
-      }
-    }
-
-    document.getElementById('start-btn').addEventListener('click', startLevel);
-    document.getElementById('pause-btn').addEventListener('click', pauseLevel);
-    document.getElementById('reset-btn').addEventListener('click', resetLevel);
-    document.getElementById('event-btn').addEventListener('click', handleEventButton);
-    document.getElementById('submit-btn').addEventListener('click', handleSubmit);
-
-    document.getElementById('sound-btn').addEventListener('click', () => {
-      state.soundOn = !state.soundOn;
-      document.getElementById('sound-btn').textContent = state.soundOn ? '🔊 Sound On' : '🔈 Sound Off';
-    });
-
-    arena.addEventListener('click', () => handleRuleClick('click'));
-    arena.addEventListener('dblclick', (e) => {
-      e.preventDefault();
-      handleRuleClick('dbl');
-    });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space') {
-        e.preventDefault();
-        state.running ? pauseLevel() : startLevel();
-      }
-      if (e.code === 'KeyE') handleEventButton();
-      if (e.code === 'KeyI') handleRuleClick('ignore');
-    });
-
-    document.querySelectorAll('.theme-toggle button').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const theme = btn.dataset.theme;
-        document.body.classList.toggle('light', theme === 'light');
-        document.querySelectorAll('.theme-toggle button').forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-
-    renderScore();
-    renderProfile();
-    renderTabs();
-    selectLevel(0);
-  </script>
+<header>
+  <div class="container topbar">
+    <div class="brand"><h1>Vision Master</h1><p>Screen-based guided visual skills training</p></div>
+    <nav id="nav"></nav>
+  </div>
+</header>
+
+<main class="container">
+  <section id="home" class="page active"></section>
+  <section id="library" class="page"></section>
+  <section id="session" class="page"></section>
+  <section id="progress" class="page"></section>
+  <section id="science" class="page"></section>
+</main>
+
+<div id="rest" class="rest-overlay"></div>
+
+<footer class="container">Disclaimer: Vision Master is for training visual skills and comfort habits. It does not diagnose, treat, or cure eye conditions, and does not replace professional eye-care advice.</footer>
+
+<script>
+const EXERCISES = [
+  { id:1, name:'Pencil Push-Up Simulator', trains:'Convergence', how:'A central target moves from far to near while you keep it single and clear.', distance:'Laptop at 50–70 cm', eyes:'Both eyes', science:'Trains near-point convergence and sustained binocular control.' },
+  { id:2, name:'Brock String on Screen', trains:'Binocular coordination and depth perception', how:'Shift focus between 3–5 virtual beads at near/mid/far points.', distance:'Laptop at 60–80 cm', eyes:'Both eyes', science:'Practices vergence changes and depth awareness across distances.' },
+  { id:3, name:'Near–Far Focus Switch', trains:'Accommodation flexibility', how:'Alternate between a near target and a far target on screen.', distance:'Laptop at 50–70 cm', eyes:'Both eyes', science:'Supports repeated near-far focusing flexibility.' },
+  { id:4, name:'Smooth Pursuit Tracker', trains:'Smooth tracking', how:'A dot moves smoothly across the screen; follow with eyes only.', distance:'Laptop at 60–75 cm', eyes:'Both eyes', science:'Builds pursuit tracking quality and gaze stability.' },
+  { id:5, name:'Saccade Jump Drill', trains:'Rapid eye movements', how:'Look quickly between two or more distant targets.', distance:'Laptop at 60–75 cm', eyes:'Both eyes', science:'Trains fast, accurate saccadic shifts.' },
+  { id:6, name:'Visual Search Challenge', trains:'Attention and reaction time', how:'Find a target symbol among distractors quickly.', distance:'Laptop at 60–80 cm', eyes:'Both eyes', science:'Combines scanning, selective attention, and quick target detection.' },
+  { id:7, name:'Single-Eye Occlusion Focus', trains:'Monocular control and eye independence', how:'Cover one eye gently and perform fixation/tracking with the open eye.', distance:'Laptop at 50–70 cm', eyes:'Single eye', science:'Encourages monocular fixation control.' },
+  { id:8, name:'Alternating Eye Fixation', trains:'Interocular switching and fixation stability', how:'Alternate which eye is open while focusing on center target.', distance:'Laptop at 50–70 cm', eyes:'Single eye', science:'Practices stable fixation during controlled eye switching.' },
+  { id:9, name:'Peripheral Awareness Rings', trains:'Peripheral awareness and scanning', how:'Keep gaze centered while noticing brief side flashes/rings.', distance:'Laptop at 60–80 cm', eyes:'Both eyes', science:'Challenges peripheral detection while preserving central gaze.' },
+  { id:10, name:'Contrast and Letter Clarity Drill', trains:'Visual discrimination and fixation quality', how:'Identify letters/symbols at changing contrast or sharpness.', distance:'Laptop at 60–80 cm', eyes:'Both eyes', science:'Trains discrimination at variable contrast levels.' }
+];
+const symptomKeys=['strain','blur','headache','dryness','comfort'];
+const pages=['home','library','session','progress','science'];
+const progress=JSON.parse(localStorage.getItem('vision_progress')||'null')||{sessions:0,streak:0,lastDate:null,totalMinutes:0,symptomHistory:[]};
+const state={page:'home',sessionIndex:0,mode:'both',sessionStart:0,completed:new Set(),summary:null,cue:false,restSeconds:12,exerciseTimer:null,restTimer:null,restInterval:null};
+
+const nav=document.getElementById('nav');
+const pageEls=Object.fromEntries(pages.map(p=>[p,document.getElementById(p)]));
+const restEl=document.getElementById('rest');
+
+function saveProgress(){ localStorage.setItem('vision_progress',JSON.stringify(progress)); }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function clearTimers(){ if(state.exerciseTimer){clearInterval(state.exerciseTimer);state.exerciseTimer=null;} if(state.restTimer){clearTimeout(state.restTimer);state.restTimer=null;} if(state.restInterval){clearInterval(state.restInterval);state.restInterval=null;} }
+
+function renderNav(){
+  nav.innerHTML='';
+  pages.forEach((p)=>{ const b=document.createElement('button'); b.className='btn'; b.textContent=p[0].toUpperCase()+p.slice(1); b.dataset.page=p; b.onclick=()=>setPage(p); nav.appendChild(b); });
+  setPage('home');
+}
+
+function setPage(p){
+  state.page=p;
+  pages.forEach((k)=>pageEls[k].classList.toggle('active',k===p));
+  [...nav.children].forEach((b)=>b.classList.toggle('active',b.dataset.page===p));
+  if(p!=='session') clearTimers();
+  if(p==='progress') renderProgress();
+}
+
+function exerciseCard(e){
+  return `<article class="card exercise-card"><span class="pill">Exercise ${e.id}</span><h3>${e.name}</h3><p><strong>What it trains:</strong> ${e.trains}</p><p><strong>How to perform:</strong> ${e.how}</p><p><strong>Recommended distance:</strong> ${e.distance}</p><p><strong>Eyes used:</strong> ${e.eyes}</p><button class="btn" onclick="startSession(${e.id-1})">Start from this exercise</button></article>`;
+}
+
+function renderHome(){
+  pageEls.home.innerHTML=`<div class="hero"><article class="card"><h2>Calm, guided visual skill sessions for laptop screens.</h2><p>Vision Master supports practice for convergence, accommodation, tracking, scanning, attention, and visual comfort with research-inspired exercises.</p><p>These exercises may help visual skills for some users, but outcomes vary and they are not a substitute for professional care.</p><button class="btn primary" onclick="setPage('library')">Quick Start</button></article><aside class="stats"><div class="stat"><strong>10</strong><span>Independent exercises</span></div><div class="stat"><strong>${progress.sessions}</strong><span>Sessions completed</span></div><div class="stat"><strong>${progress.streak}</strong><span>Current streak</span></div></aside></div>`;
+}
+
+function renderLibrary(){ pageEls.library.innerHTML=`<section><div class="section-head"><h2>Exercise Library</h2><button class="btn primary" onclick="startSession(0)">Start Session</button></div><div class="grid">${EXERCISES.map(exerciseCard).join('')}</div></section>`; }
+
+function beep(){
+  try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);g.gain.value=.025;o.frequency.value=780;o.start();o.stop(c.currentTime+.08);}catch(_){/* no-op */}
+}
+
+function showCue(){ state.cue=true; beep(); renderSession(); setTimeout(()=>{state.cue=false; renderSession();},700); }
+
+function startSession(index=0){
+  clearTimers();
+  state.sessionIndex=index;
+  state.mode='both';
+  state.sessionStart=Date.now();
+  state.summary=null;
+  state.completed=new Set();
+  setPage('session');
+  renderSession();
+}
+
+function completeStep(){ state.completed.add(state.sessionIndex); showCue(); }
+
+function restThen(next){
+  clearTimers();
+  let left=state.restSeconds;
+  restEl.classList.add('active');
+  const draw=()=>{ restEl.innerHTML=`<div class="card" style="max-width:420px;text-align:center;"><h3>Rest Screen</h3><p>Blink gently, relax focus, and breathe.</p><p><strong>${left}s</strong> to next exercise.</p></div>`; };
+  draw();
+  state.restInterval=setInterval(()=>{ left-=1; draw(); if(left<=0){clearTimers(); restEl.classList.remove('active'); next();}},1000);
+}
+
+function nextExercise(){
+  if(state.sessionIndex<EXERCISES.length-1){ restThen(()=>{ state.sessionIndex+=1; renderSession(); }); }
+  else finishSession();
+}
+
+function updateStreak(){
+  const today=todayISO();
+  if(!progress.lastDate) progress.streak=1;
+  else { const diff=Math.round((new Date(today)-new Date(progress.lastDate))/86400000); if(diff===1) progress.streak+=1; else if(diff>1) progress.streak=1; }
+  progress.lastDate=today;
+}
+
+function finishSession(){
+  clearTimers();
+  const minutes=Math.max(1,Math.round((Date.now()-state.sessionStart)/60000));
+  progress.sessions+=1; progress.totalMinutes+=minutes; updateStreak(); saveProgress();
+  state.summary={completed:state.completed.size,minutes,mode:state.mode==='both'?'Both eyes':'Single eye'};
+  renderHome(); renderSession();
+}
+
+function setMode(mode){ state.mode=mode; renderSession(); }
+
+function exerciseZoneHTML(id){
+  switch(id){
+    case 1: return `<div id="pp-dot" class="dot"></div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Follow target as it moves near/far.</div>`;
+    case 2: return `<div class="bead" style="left:20%;top:50%;background:#ff6f91"></div><div class="bead" style="left:50%;top:40%;background:#62a8ff"></div><div class="bead" style="left:78%;top:56%;background:#7fd97f"></div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Shift focus bead-to-bead.</div>`;
+    case 3: return `<div class="target-char" id="nf-target" style="position:absolute;">NEAR</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Alternate near and far labels.</div>`;
+    case 4: return `<div id="sp-dot" class="dot"></div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Smoothly track the moving dot.</div>`;
+    case 5: return `<div id="sj-a" class="target-char" style="position:absolute;left:16%;top:45%;font-size:2rem;">A</div><div id="sj-b" class="target-char" style="position:absolute;right:16%;top:45%;font-size:2rem;">B</div><div id="sj-c" class="target-char" style="position:absolute;left:46%;top:20%;font-size:2rem;">C</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Jump gaze quickly between letters.</div>`;
+    case 6: return `<div id="search-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:min(360px,90%);"></div><div style="position:absolute;top:10px;left:12px;font-size:.88rem;color:var(--muted);">Find target: <strong>⊕</strong></div>`;
+    case 7: return `<div class="target-char" style="font-size:3rem;">•</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Cover one eye, hold fixation on center.</div>`;
+    case 8: return `<div class="target-char" style="font-size:3rem;">◎</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Alternate open eye every 5–10 seconds.</div>`;
+    case 9: return `<div class="target-char" style="font-size:3rem;">+</div><div id="flash-l" class="flash" style="left:12%;top:42%;"></div><div id="flash-r" class="flash" style="right:12%;top:42%;"></div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Keep gaze on center and notice side flashes.</div>`;
+    case 10: return `<div id="contrast-letter" class="target-char" style="font-size:3.2rem;">E</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Identify letter as contrast changes.</div>`;
+    default: return '';
+  }
+}
+
+function initExerciseBehavior(id){
+  clearTimers();
+  if(id===1){
+    const dot=document.getElementById('pp-dot'); let t=0; state.exerciseTimer=setInterval(()=>{ t=(t+.09)%6.28; const y=Math.sin(t)*70; dot.style.left='50%'; dot.style.top=`${48+y/2}%`; },60);
+  } else if(id===3){
+    const target=document.getElementById('nf-target'); let near=true; state.exerciseTimer=setInterval(()=>{ near=!near; target.textContent=near?'NEAR':'FAR'; target.style.transform=near?'scale(1.12)':'scale(.88)'; target.style.opacity=near?'1':'0.58'; },1100);
+  } else if(id===4){
+    const dot=document.getElementById('sp-dot'); let a=0; state.exerciseTimer=setInterval(()=>{ a=(a+.06)%6.28; dot.style.left=`${50+Math.sin(a)*38}%`; dot.style.top=`${50+Math.sin(a*1.5)*22}%`; },50);
+  } else if(id===5){
+    let i=0; const ids=['sj-a','sj-b','sj-c']; state.exerciseTimer=setInterval(()=>{ ids.forEach((x)=>document.getElementById(x).style.color='var(--text)'); document.getElementById(ids[i]).style.color='var(--primary)'; i=(i+1)%ids.length; },550);
+  } else if(id===6){
+    const grid=document.getElementById('search-grid'); const symbols=['○','◇','△','□','⊕']; const target='⊕'; const cells=[]; for(let i=0;i<24;i++){ const b=document.createElement('button'); b.className='btn'; b.style.borderRadius='10px'; b.style.padding='.3rem'; b.textContent=symbols[Math.floor(Math.random()*4)]; cells.push(b); }
+    cells[Math.floor(Math.random()*cells.length)].textContent=target;
+    cells.forEach((c)=>{ c.onclick=()=>{ if(c.textContent===target){ c.style.background='var(--primary-soft)'; showCue(); } }; grid.appendChild(c); });
+  } else if(id===9){
+    const l=document.getElementById('flash-l'); const r=document.getElementById('flash-r'); let on=false; state.exerciseTimer=setInterval(()=>{ on=!on; l.style.opacity=on?'1':'0'; r.style.opacity=!on?'1':'0'; },420);
+  } else if(id===10){
+    const letter=document.getElementById('contrast-letter'); const chars=['E','F','P','R']; let i=0; state.exerciseTimer=setInterval(()=>{ i=(i+1)%chars.length; letter.textContent=chars[i]; letter.style.opacity=String(0.35 + (i%4)*0.18); },700);
+  }
+}
+
+function renderSession(){
+  const ex=EXERCISES[state.sessionIndex];
+  if(state.summary){
+    pageEls.session.innerHTML=`<article class="card"><h2>Session Summary</h2><p><strong>Completed exercises:</strong> ${state.summary.completed} / 10</p><p><strong>Time spent:</strong> ${state.summary.minutes} minutes</p><p><strong>Mode at finish:</strong> ${state.summary.mode}</p><button class="btn" onclick="setPage('progress')">View Progress</button> <button class="btn primary" onclick="startSession(0)">Start New Session</button><form id="symptomForm" class="symptoms"><h3>Symptom Self-Check</h3>${symptomKeys.map(k=>`<label><span>${k[0].toUpperCase()+k.slice(1)}</span><input type="range" min="1" max="5" value="3" name="${k}"/><span>3</span></label>`).join('')}<button class="btn" type="submit">Save Symptom Check</button></form></article>`;
+    document.querySelectorAll('#symptomForm input[type="range"]').forEach((el)=>el.oninput=(e)=>e.target.parentElement.querySelector('span:last-child').textContent=e.target.value);
+    document.getElementById('symptomForm').onsubmit=(e)=>{e.preventDefault();const fd=new FormData(e.target);const payload={date:todayISO()};symptomKeys.forEach(k=>payload[k]=Number(fd.get(k)));progress.symptomHistory.unshift(payload);progress.symptomHistory=progress.symptomHistory.slice(0,30);saveProgress();alert('Symptom check saved.');renderProgress();};
+    return;
+  }
+
+  const p=((state.sessionIndex+1)/EXERCISES.length)*100;
+  pageEls.session.innerHTML=`<div class="session-layout"><article class="card"><h2>${ex.name}</h2><p><strong>What it trains:</strong> ${ex.trains}</p><p>${ex.how}</p><p><strong>Recommended distance:</strong> ${ex.distance}</p><div class="toggle-row"><button class="btn ${state.mode==='both'?'active':''}" onclick="setMode('both')">Both eyes</button><button class="btn ${state.mode==='single'?'active':''}" onclick="setMode('single')" ${ex.eyes==='Both eyes'?'disabled':''}>Single eye</button></div><div class="zone" id="exercise-zone">${exerciseZoneHTML(ex.id)}</div><p class="cue ${state.cue?'show':''}">✓ Step complete</p></article><aside class="card"><p><strong>Exercise ${state.sessionIndex+1}</strong> of 10</p><div class="progress"><span style="width:${p}%"></span></div><p style="color:var(--muted)">Each exercise is independent. Follow the specific instruction shown in the training zone.</p><button class="btn primary block" onclick="completeStep()">Mark Step Complete</button><button class="btn block" onclick="nextExercise()">Next Exercise</button></aside></div>`;
+  initExerciseBehavior(ex.id);
+}
+
+function symptomAverages(){ if(!progress.symptomHistory.length) return null; const t=Object.fromEntries(symptomKeys.map(k=>[k,0])); progress.symptomHistory.forEach(e=>symptomKeys.forEach(k=>t[k]+=e[k])); return Object.fromEntries(symptomKeys.map(k=>[k,(t[k]/progress.symptomHistory.length).toFixed(1)])); }
+
+function renderProgress(){ const avg=symptomAverages(); pageEls.progress.innerHTML=`<section class="card"><h2>Progress</h2><div class="metrics"><div class="metric"><strong>${progress.sessions}</strong><span>Session count</span></div><div class="metric"><strong>${progress.streak}</strong><span>Streak (days)</span></div><div class="metric"><strong>${progress.totalMinutes}</strong><span>Total minutes</span></div></div><h3>Symptom Feedback</h3>${avg?`<ul class="feedback">${symptomKeys.map(k=>`<li><span>${k}</span><strong>${avg[k]} / 5</strong></li>`).join('')}</ul>`:'<p>No symptom data yet. Finish a session and save the self-check.</p>'}</section>`; }
+
+function renderScience(){ pageEls.science.innerHTML=`<section class="card"><h2>Science</h2><p style="color:var(--muted)">These are research-inspired visual skill drills for convergence, accommodation, tracking, scanning, attention, and comfort. They may help some users, but results vary and this does not replace professional care.</p><div class="grid">${EXERCISES.map(e=>`<article class="card exercise-card"><h3>${e.name}</h3><p><strong>Trains:</strong> ${e.trains}</p><p>${e.science}</p></article>`).join('')}</div></section>`; }
+
+renderNav(); renderHome(); renderLibrary(); renderSession(); renderProgress(); renderScience();
+window.setPage=setPage; window.startSession=startSession; window.completeStep=completeStep; window.nextExercise=nextExercise; window.setMode=setMode;
+</script>
 </body>
 </html>
