@@ -6,255 +6,349 @@
   <title>Vision Master</title>
   <style>
     :root {
-      --bg: #f5f8ff;
-      --surface: #ffffff;
-      --surface-soft: #edf3ff;
-      --text: #1f2b40;
-      --muted: #5f6f8a;
-      --primary: #4f79ff;
-      --primary-soft: #dfe8ff;
-      --ok: #1c9a64;
-      --border: #d9e4f3;
-      --shadow: 0 14px 34px rgba(40, 70, 120, 0.1);
+      --bg: #eef6ff;
+      --card: #ffffff;
+      --line: #d6e6fb;
+      --text: #1e2f4d;
+      --muted: #607393;
+      --primary: #4c78ff;
+      --ok: #1ea56d;
     }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: Inter, Segoe UI, system-ui, sans-serif; color: var(--text); background: radial-gradient(circle at top right, #eaf2ff, var(--bg)); }
-    .container { width: min(1120px, 92vw); margin: 0 auto; }
-    header { position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border); background: rgba(245,248,255,.92); backdrop-filter: blur(10px); }
-    .topbar { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.9rem 0; }
-    .brand h1 { margin:0; font-size:1.2rem; }
-    .brand p { margin:0; color:var(--muted); font-size:.9rem; }
-    nav { display:flex; flex-wrap:wrap; gap:.45rem; }
-    .btn { border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:999px; padding:.52rem .95rem; font-weight:600; cursor:pointer; }
-    .btn.primary,.btn.active { background:var(--primary); color:#fff; border-color:transparent; }
-    .btn:disabled { opacity:.55; cursor:not-allowed; }
-    .btn.block{ width:100%; margin-top:.45rem; }
-    .page { display:none; animation:fade .25s ease; }
-    .page.active { display:block; }
-    main { padding: 1.2rem 0 2rem; }
-    @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-    .card{ background:var(--surface); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); padding:1rem; }
-    .hero{ display:grid; grid-template-columns:1.1fr .9fr; gap:1rem; }
-    .hero h2{ margin:.1rem 0 .7rem; font-size:clamp(1.5rem,3vw,2.2rem); }
-    .hero p{ color:var(--muted); line-height:1.55; }
-    .stats{ display:grid; gap:.7rem; }
-    .stat{ border:1px solid var(--border); background:var(--surface-soft); border-radius:12px; padding:.72rem; }
-    .stat strong{ display:block; font-size:1.32rem; }
-    .stat span{ color:var(--muted); }
-    .section-head { display:flex; justify-content:space-between; gap:.8rem; align-items:center; margin-bottom:.8rem; }
-    .grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.82rem; }
-    .pill{ display:inline-block; border-radius:999px; background:var(--primary-soft); color:#2b4ea9; font-size:.8rem; font-weight:700; padding:.2rem .6rem; margin-bottom:.3rem; }
-    .exercise-card h3{ margin:.15rem 0 .4rem; }
-    .exercise-card p{ margin:.25rem 0; color:var(--muted); font-size:.93rem; }
-
-    .session-layout{ display:grid; grid-template-columns:1fr 325px; gap:1rem; }
-    .toggle-row{ display:flex; flex-wrap:wrap; gap:.5rem; margin:.55rem 0; }
-    .zone{ border:1px dashed var(--border); border-radius:14px; min-height:270px; display:grid; place-items:center; background:linear-gradient(150deg,#f8fbff,#edf4ff); position:relative; overflow:hidden; }
-    .progress{ height:10px; border-radius:999px; background:#e6eefb; overflow:hidden; margin:.5rem 0 .65rem; }
-    .progress span{ display:block; height:100%; background:linear-gradient(90deg,#4f79ff,#6ab5ff); }
-    .cue{ min-height:24px; color:transparent; font-weight:700; }
-    .cue.show{ color:var(--ok); }
-
-    .dot{ width:24px; height:24px; border-radius:50%; background:radial-gradient(circle at 30% 30%,#fff,#4f79ff); box-shadow:0 0 0 8px rgba(79,121,255,.14); position:absolute; }
-    .bead{ width:18px;height:18px;border-radius:50%; position:absolute; }
-    .target-char{ font-size:2.7rem; font-weight:800; letter-spacing:.06em; }
-    .ring{ position:absolute; width:88px; height:88px; border-radius:50%; border:4px solid rgba(79,121,255,.5); opacity:0; transition:opacity .2s ease; }
-    .flash{ position:absolute; width:44px; height:44px; border-radius:50%; border:3px solid #4f79ff; opacity:0; }
-
-    .rest-overlay{ position:fixed; inset:0; display:none; place-items:center; background:rgba(20,30,50,.72); z-index:100; }
-    .rest-overlay.active{ display:grid; }
-
-    .symptoms{ display:grid; gap:.5rem; margin-top:.75rem; }
-    .symptoms label{ display:grid; grid-template-columns:100px 1fr 26px; align-items:center; gap:.6rem; }
-    .metrics{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.7rem; margin-bottom:.8rem; }
-    .metric{ border:1px solid var(--border); background:var(--surface-soft); border-radius:12px; padding:.7rem; }
-    .metric strong{ display:block; font-size:1.34rem; }
-    .feedback{ list-style:none; margin:0; padding:0; display:grid; gap:.45rem; }
-    .feedback li{ display:flex; justify-content:space-between; background:#f8fbff; border-radius:10px; padding:.5rem .65rem; }
-    footer{ color:var(--muted); padding:.8rem 0 1.8rem; font-size:.9rem; }
-
-    @media (max-width:960px){ .hero,.grid,.session-layout,.metrics{ grid-template-columns:1fr; } }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f4f9ff, var(--bg));
+    }
+    .wrap { width: min(1080px, 92vw); margin: 0 auto; padding: 1rem 0 1.8rem; }
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: .8rem;
+      align-items: center;
+      margin-bottom: .8rem;
+    }
+    h1 { margin: 0; font-size: 1.35rem; }
+    .muted { color: var(--muted); }
+    .controls { display: flex; flex-wrap: wrap; gap: .5rem; }
+    button, select {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 999px;
+      padding: .5rem .9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button.primary { background: var(--primary); color: #fff; border-color: transparent; }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 10px 28px rgba(31, 72, 140, .08);
+      padding: .9rem;
+    }
+    .layout { display: grid; grid-template-columns: 1fr 300px; gap: .8rem; }
+    canvas {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: radial-gradient(circle at 50% 45%, #fcfeff, #edf5ff);
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      display: block;
+    }
+    .grid { display: grid; gap: .6rem; }
+    .mini { background: #f4f8ff; border: 1px solid var(--line); border-radius: 12px; padding: .7rem; }
+    .mini strong { display: block; font-size: 1.2rem; }
+    .progress { height: 10px; background: #e3edfb; border-radius: 999px; overflow: hidden; }
+    .progress > span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #4c78ff, #68b8ff); transition: width .2s ease; }
+    .cue { min-height: 1.3rem; font-weight: 700; color: transparent; }
+    .cue.on { color: var(--ok); }
+    footer { margin-top: .8rem; font-size: .84rem; color: var(--muted); }
+    @media (max-width: 930px) { .layout { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-<header>
-  <div class="container topbar">
-    <div class="brand"><h1>Vision Master</h1><p>Screen-based guided visual skills training</p></div>
-    <nav id="nav"></nav>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>Vision Master · Motion Eye Training</h1>
+        <div class="muted">Minimal UI. Fast moving dots/balls. Focus + color attention.</div>
+      </div>
+      <div class="controls">
+        <select id="fpsSelect">
+          <option value="60">60 FPS mode</option>
+          <option value="120">120 FPS mode</option>
+        </select>
+        <button id="startBtn" class="primary">Start</button>
+        <button id="nextBtn">Next Exercise</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <section class="panel">
+        <canvas id="arena" width="960" height="600"></canvas>
+        <div class="cue" id="cue">Step complete ✓</div>
+      </section>
+
+      <aside class="panel grid">
+        <div>
+          <strong id="exerciseName">Exercise 1</strong>
+          <div class="muted" id="exerciseHint">Track motion and keep gaze smooth.</div>
+        </div>
+        <div class="mini">
+          <div class="muted">Session Progress</div>
+          <div class="progress"><span id="bar"></span></div>
+          <div id="idxLabel" class="muted" style="margin-top:.45rem;">1 / 6</div>
+        </div>
+        <div class="mini">
+          <div class="muted">Stats</div>
+          <strong id="fpsNow">0 FPS</strong>
+          <div class="muted" id="score">Focus score: 0</div>
+          <div class="muted" id="timeSpent">Time: 0s</div>
+        </div>
+        <div class="mini">
+          <div class="muted">Modes</div>
+          <button id="bothBtn" class="primary" style="margin-top:.5rem;">Both eyes</button>
+          <button id="singleBtn" style="margin-top:.5rem;">Single eye</button>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      Training tool only: may support visual attention/comfort for some users. Results vary. Not a medical treatment.
+    </footer>
   </div>
-</header>
 
-<main class="container">
-  <section id="home" class="page active"></section>
-  <section id="library" class="page"></section>
-  <section id="session" class="page"></section>
-  <section id="progress" class="page"></section>
-  <section id="science" class="page"></section>
-</main>
+  <script>
+    const EXERCISES = [
+      { name: 'Color Dot Pursuit', hint: 'Follow the bright blue dot while it curves smoothly.', run: runPursuit },
+      { name: 'Dual Orbit Focus', hint: 'Track two opposite orbiting balls without moving your head.', run: runDualOrbit },
+      { name: 'Color-Switch Ball', hint: 'Keep tracking one ball while its color changes quickly.', run: runColorSwitch },
+      { name: 'Multi-Ball Attention', hint: 'Track the highlighted ball among moving distractors.', run: runMultiBall },
+      { name: 'Peripheral Pulse Rings', hint: 'Keep center gaze while noticing side pulses.', run: runPeripheral },
+      { name: 'Speed Saccade Targets', hint: 'Shift gaze between jumping targets fast and accurately.', run: runSaccade }
+    ];
 
-<div id="rest" class="rest-overlay"></div>
+    const canvas = document.getElementById('arena');
+    const ctx = canvas.getContext('2d');
 
-<footer class="container">Disclaimer: Vision Master is for training visual skills and comfort habits. It does not diagnose, treat, or cure eye conditions, and does not replace professional eye-care advice.</footer>
+    const state = {
+      running: false,
+      mode: 'both',
+      fpsTarget: 60,
+      exerciseIndex: 0,
+      startTime: 0,
+      score: 0,
+      cueOn: false,
+      lastTime: 0,
+      fpsCounter: 0,
+      fpsAccumulator: 0,
+      nowFps: 0,
+      raf: 0
+    };
 
-<script>
-const EXERCISES = [
-  { id:1, name:'Pencil Push-Up Simulator', trains:'Convergence', how:'A central target moves from far to near while you keep it single and clear.', distance:'Laptop at 50–70 cm', eyes:'Both eyes', science:'Trains near-point convergence and sustained binocular control.' },
-  { id:2, name:'Brock String on Screen', trains:'Binocular coordination and depth perception', how:'Shift focus between 3–5 virtual beads at near/mid/far points.', distance:'Laptop at 60–80 cm', eyes:'Both eyes', science:'Practices vergence changes and depth awareness across distances.' },
-  { id:3, name:'Near–Far Focus Switch', trains:'Accommodation flexibility', how:'Alternate between a near target and a far target on screen.', distance:'Laptop at 50–70 cm', eyes:'Both eyes', science:'Supports repeated near-far focusing flexibility.' },
-  { id:4, name:'Smooth Pursuit Tracker', trains:'Smooth tracking', how:'A dot moves smoothly across the screen; follow with eyes only.', distance:'Laptop at 60–75 cm', eyes:'Both eyes', science:'Builds pursuit tracking quality and gaze stability.' },
-  { id:5, name:'Saccade Jump Drill', trains:'Rapid eye movements', how:'Look quickly between two or more distant targets.', distance:'Laptop at 60–75 cm', eyes:'Both eyes', science:'Trains fast, accurate saccadic shifts.' },
-  { id:6, name:'Visual Search Challenge', trains:'Attention and reaction time', how:'Find a target symbol among distractors quickly.', distance:'Laptop at 60–80 cm', eyes:'Both eyes', science:'Combines scanning, selective attention, and quick target detection.' },
-  { id:7, name:'Single-Eye Occlusion Focus', trains:'Monocular control and eye independence', how:'Cover one eye gently and perform fixation/tracking with the open eye.', distance:'Laptop at 50–70 cm', eyes:'Single eye', science:'Encourages monocular fixation control.' },
-  { id:8, name:'Alternating Eye Fixation', trains:'Interocular switching and fixation stability', how:'Alternate which eye is open while focusing on center target.', distance:'Laptop at 50–70 cm', eyes:'Single eye', science:'Practices stable fixation during controlled eye switching.' },
-  { id:9, name:'Peripheral Awareness Rings', trains:'Peripheral awareness and scanning', how:'Keep gaze centered while noticing brief side flashes/rings.', distance:'Laptop at 60–80 cm', eyes:'Both eyes', science:'Challenges peripheral detection while preserving central gaze.' },
-  { id:10, name:'Contrast and Letter Clarity Drill', trains:'Visual discrimination and fixation quality', how:'Identify letters/symbols at changing contrast or sharpness.', distance:'Laptop at 60–80 cm', eyes:'Both eyes', science:'Trains discrimination at variable contrast levels.' }
-];
-const symptomKeys=['strain','blur','headache','dryness','comfort'];
-const pages=['home','library','session','progress','science'];
-const progress=JSON.parse(localStorage.getItem('vision_progress')||'null')||{sessions:0,streak:0,lastDate:null,totalMinutes:0,symptomHistory:[]};
-const state={page:'home',sessionIndex:0,mode:'both',sessionStart:0,completed:new Set(),summary:null,cue:false,restSeconds:12,exerciseTimer:null,restTimer:null,restInterval:null};
+    const ui = {
+      name: document.getElementById('exerciseName'),
+      hint: document.getElementById('exerciseHint'),
+      idx: document.getElementById('idxLabel'),
+      bar: document.getElementById('bar'),
+      fps: document.getElementById('fpsNow'),
+      score: document.getElementById('score'),
+      time: document.getElementById('timeSpent'),
+      cue: document.getElementById('cue')
+    };
 
-const nav=document.getElementById('nav');
-const pageEls=Object.fromEntries(pages.map(p=>[p,document.getElementById(p)]));
-const restEl=document.getElementById('rest');
+    const fpsSelect = document.getElementById('fpsSelect');
+    const startBtn = document.getElementById('startBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const bothBtn = document.getElementById('bothBtn');
+    const singleBtn = document.getElementById('singleBtn');
 
-function saveProgress(){ localStorage.setItem('vision_progress',JSON.stringify(progress)); }
-function todayISO(){ return new Date().toISOString().slice(0,10); }
-function clearTimers(){ if(state.exerciseTimer){clearInterval(state.exerciseTimer);state.exerciseTimer=null;} if(state.restTimer){clearTimeout(state.restTimer);state.restTimer=null;} if(state.restInterval){clearInterval(state.restInterval);state.restInterval=null;} }
+    const scene = {
+      t: 0,
+      target: { x: 480, y: 300 },
+      balls: [],
+      colorIndex: 0,
+      pulse: 0,
+      jumpTimer: 0,
+      jumpTarget: { x: 200, y: 200 }
+    };
 
-function renderNav(){
-  nav.innerHTML='';
-  pages.forEach((p)=>{ const b=document.createElement('button'); b.className='btn'; b.textContent=p[0].toUpperCase()+p.slice(1); b.dataset.page=p; b.onclick=()=>setPage(p); nav.appendChild(b); });
-  setPage('home');
-}
+    function setMode(mode) {
+      state.mode = mode;
+      bothBtn.classList.toggle('primary', mode === 'both');
+      singleBtn.classList.toggle('primary', mode === 'single');
+    }
 
-function setPage(p){
-  state.page=p;
-  pages.forEach((k)=>pageEls[k].classList.toggle('active',k===p));
-  [...nav.children].forEach((b)=>b.classList.toggle('active',b.dataset.page===p));
-  if(p!=='session') clearTimers();
-  if(p==='progress') renderProgress();
-}
+    function resetScene() {
+      scene.t = 0;
+      scene.colorIndex = 0;
+      scene.pulse = 0;
+      scene.jumpTimer = 0;
+      scene.target = { x: 480, y: 300 };
+      scene.balls = Array.from({ length: 8 }, (_, i) => ({
+        x: 120 + Math.random() * 720,
+        y: 120 + Math.random() * 360,
+        vx: (Math.random() * 2 - 1) * (2 + Math.random() * 2),
+        vy: (Math.random() * 2 - 1) * (2 + Math.random() * 2),
+        r: 10 + Math.random() * 7,
+        hue: (i * 45) % 360
+      }));
+    }
 
-function exerciseCard(e){
-  return `<article class="card exercise-card"><span class="pill">Exercise ${e.id}</span><h3>${e.name}</h3><p><strong>What it trains:</strong> ${e.trains}</p><p><strong>How to perform:</strong> ${e.how}</p><p><strong>Recommended distance:</strong> ${e.distance}</p><p><strong>Eyes used:</strong> ${e.eyes}</p><button class="btn" onclick="startSession(${e.id-1})">Start from this exercise</button></article>`;
-}
+    function start() {
+      state.running = true;
+      state.startTime = performance.now();
+      state.score = 0;
+      state.lastTime = 0;
+      resetScene();
+      showCue('Session started ✓');
+      if (!state.raf) state.raf = requestAnimationFrame(loop);
+    }
 
-function renderHome(){
-  pageEls.home.innerHTML=`<div class="hero"><article class="card"><h2>Calm, guided visual skill sessions for laptop screens.</h2><p>Vision Master supports practice for convergence, accommodation, tracking, scanning, attention, and visual comfort with research-inspired exercises.</p><p>These exercises may help visual skills for some users, but outcomes vary and they are not a substitute for professional care.</p><button class="btn primary" onclick="setPage('library')">Quick Start</button></article><aside class="stats"><div class="stat"><strong>10</strong><span>Independent exercises</span></div><div class="stat"><strong>${progress.sessions}</strong><span>Sessions completed</span></div><div class="stat"><strong>${progress.streak}</strong><span>Current streak</span></div></aside></div>`;
-}
+    function nextExercise() {
+      state.exerciseIndex = (state.exerciseIndex + 1) % EXERCISES.length;
+      resetScene();
+      showCue('Next exercise ✓');
+      updateInfo();
+    }
 
-function renderLibrary(){ pageEls.library.innerHTML=`<section><div class="section-head"><h2>Exercise Library</h2><button class="btn primary" onclick="startSession(0)">Start Session</button></div><div class="grid">${EXERCISES.map(exerciseCard).join('')}</div></section>`; }
+    function showCue(message) {
+      ui.cue.textContent = message;
+      ui.cue.classList.add('on');
+      setTimeout(() => ui.cue.classList.remove('on'), 700);
+    }
 
-function beep(){
-  try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);g.gain.value=.025;o.frequency.value=780;o.start();o.stop(c.currentTime+.08);}catch(_){/* no-op */}
-}
+    function drawBackground() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#fafdff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = '#d7e7ff';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 2, 0);
+      ctx.lineTo(canvas.width / 2, canvas.height);
+      ctx.moveTo(0, canvas.height / 2);
+      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.stroke();
+    }
 
-function showCue(){ state.cue=true; beep(); renderSession(); setTimeout(()=>{state.cue=false; renderSession();},700); }
+    function runPursuit(dt) {
+      scene.t += dt * 0.001 * (state.fpsTarget / 60);
+      const x = canvas.width / 2 + Math.sin(scene.t * 1.4) * 300;
+      const y = canvas.height / 2 + Math.cos(scene.t * 1.1) * 150;
+      drawDot(x, y, '#4e7fff', 14);
+    }
 
-function startSession(index=0){
-  clearTimers();
-  state.sessionIndex=index;
-  state.mode='both';
-  state.sessionStart=Date.now();
-  state.summary=null;
-  state.completed=new Set();
-  setPage('session');
-  renderSession();
-}
+    function runDualOrbit(dt) {
+      scene.t += dt * 0.001 * (state.fpsTarget / 60);
+      const a = scene.t * 1.7;
+      const x1 = canvas.width / 2 + Math.cos(a) * 250;
+      const y1 = canvas.height / 2 + Math.sin(a) * 130;
+      const x2 = canvas.width / 2 + Math.cos(a + Math.PI) * 250;
+      const y2 = canvas.height / 2 + Math.sin(a + Math.PI) * 130;
+      drawDot(x1, y1, '#ff6ea8', 12);
+      drawDot(x2, y2, '#41a7ff', 12);
+    }
 
-function completeStep(){ state.completed.add(state.sessionIndex); showCue(); }
+    function runColorSwitch(dt) {
+      scene.t += dt * 0.001 * (state.fpsTarget / 60);
+      scene.colorIndex += dt * 0.02;
+      const x = canvas.width / 2 + Math.sin(scene.t * 2.2) * 270;
+      const y = canvas.height / 2 + Math.cos(scene.t * 1.8) * 180;
+      const hue = Math.floor(scene.colorIndex) % 360;
+      drawDot(x, y, `hsl(${hue} 90% 55%)`, 15);
+    }
 
-function restThen(next){
-  clearTimers();
-  let left=state.restSeconds;
-  restEl.classList.add('active');
-  const draw=()=>{ restEl.innerHTML=`<div class="card" style="max-width:420px;text-align:center;"><h3>Rest Screen</h3><p>Blink gently, relax focus, and breathe.</p><p><strong>${left}s</strong> to next exercise.</p></div>`; };
-  draw();
-  state.restInterval=setInterval(()=>{ left-=1; draw(); if(left<=0){clearTimers(); restEl.classList.remove('active'); next();}},1000);
-}
+    function runMultiBall(dt) {
+      const speedScale = state.fpsTarget / 60;
+      scene.balls.forEach((b, i) => {
+        b.x += b.vx * speedScale;
+        b.y += b.vy * speedScale;
+        if (b.x < b.r || b.x > canvas.width - b.r) b.vx *= -1;
+        if (b.y < b.r || b.y > canvas.height - b.r) b.vy *= -1;
+        drawDot(b.x, b.y, i === 0 ? '#4c78ff' : `hsl(${b.hue} 70% 62%)`, b.r);
+      });
+    }
 
-function nextExercise(){
-  if(state.sessionIndex<EXERCISES.length-1){ restThen(()=>{ state.sessionIndex+=1; renderSession(); }); }
-  else finishSession();
-}
+    function runPeripheral(dt) {
+      scene.t += dt * 0.001 * (state.fpsTarget / 60);
+      drawDot(canvas.width / 2, canvas.height / 2, '#2c3e68', 9);
+      const pulse = (Math.sin(scene.t * 5) + 1) / 2;
+      ctx.strokeStyle = `rgba(76,120,255,${0.2 + pulse * 0.6})`;
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(140, canvas.height / 2, 38 + pulse * 18, 0, Math.PI * 2);
+      ctx.arc(canvas.width - 140, canvas.height / 2, 38 + (1 - pulse) * 18, 0, Math.PI * 2);
+      ctx.stroke();
+    }
 
-function updateStreak(){
-  const today=todayISO();
-  if(!progress.lastDate) progress.streak=1;
-  else { const diff=Math.round((new Date(today)-new Date(progress.lastDate))/86400000); if(diff===1) progress.streak+=1; else if(diff>1) progress.streak=1; }
-  progress.lastDate=today;
-}
+    function runSaccade(dt) {
+      scene.jumpTimer += dt;
+      if (scene.jumpTimer > 450) {
+        scene.jumpTimer = 0;
+        scene.jumpTarget.x = 120 + Math.random() * (canvas.width - 240);
+        scene.jumpTarget.y = 110 + Math.random() * (canvas.height - 220);
+      }
+      drawDot(scene.jumpTarget.x, scene.jumpTarget.y, '#ff7a42', 16);
+      drawDot(canvas.width / 2, canvas.height / 2, '#5a77a9', 7);
+    }
 
-function finishSession(){
-  clearTimers();
-  const minutes=Math.max(1,Math.round((Date.now()-state.sessionStart)/60000));
-  progress.sessions+=1; progress.totalMinutes+=minutes; updateStreak(); saveProgress();
-  state.summary={completed:state.completed.size,minutes,mode:state.mode==='both'?'Both eyes':'Single eye'};
-  renderHome(); renderSession();
-}
+    function drawDot(x, y, color, r) {
+      ctx.beginPath();
+      ctx.fillStyle = color;
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.closePath();
+    }
 
-function setMode(mode){ state.mode=mode; renderSession(); }
+    function updateInfo() {
+      const ex = EXERCISES[state.exerciseIndex];
+      ui.name.textContent = ex.name;
+      ui.hint.textContent = ex.hint;
+      ui.idx.textContent = `${state.exerciseIndex + 1} / ${EXERCISES.length}`;
+      ui.bar.style.width = `${((state.exerciseIndex + 1) / EXERCISES.length) * 100}%`;
+    }
 
-function exerciseZoneHTML(id){
-  switch(id){
-    case 1: return `<div id="pp-dot" class="dot"></div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Follow target as it moves near/far.</div>`;
-    case 2: return `<div class="bead" style="left:20%;top:50%;background:#ff6f91"></div><div class="bead" style="left:50%;top:40%;background:#62a8ff"></div><div class="bead" style="left:78%;top:56%;background:#7fd97f"></div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Shift focus bead-to-bead.</div>`;
-    case 3: return `<div class="target-char" id="nf-target" style="position:absolute;">NEAR</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Alternate near and far labels.</div>`;
-    case 4: return `<div id="sp-dot" class="dot"></div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Smoothly track the moving dot.</div>`;
-    case 5: return `<div id="sj-a" class="target-char" style="position:absolute;left:16%;top:45%;font-size:2rem;">A</div><div id="sj-b" class="target-char" style="position:absolute;right:16%;top:45%;font-size:2rem;">B</div><div id="sj-c" class="target-char" style="position:absolute;left:46%;top:20%;font-size:2rem;">C</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Jump gaze quickly between letters.</div>`;
-    case 6: return `<div id="search-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:min(360px,90%);"></div><div style="position:absolute;top:10px;left:12px;font-size:.88rem;color:var(--muted);">Find target: <strong>⊕</strong></div>`;
-    case 7: return `<div class="target-char" style="font-size:3rem;">•</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Cover one eye, hold fixation on center.</div>`;
-    case 8: return `<div class="target-char" style="font-size:3rem;">◎</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Alternate open eye every 5–10 seconds.</div>`;
-    case 9: return `<div class="target-char" style="font-size:3rem;">+</div><div id="flash-l" class="flash" style="left:12%;top:42%;"></div><div id="flash-r" class="flash" style="right:12%;top:42%;"></div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Keep gaze on center and notice side flashes.</div>`;
-    case 10: return `<div id="contrast-letter" class="target-char" style="font-size:3.2rem;">E</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Identify letter as contrast changes.</div>`;
-    default: return '';
-  }
-}
+    function loop(ts) {
+      if (!state.running) {
+        state.raf = requestAnimationFrame(loop);
+        return;
+      }
+      const dt = state.lastTime ? ts - state.lastTime : 16.6;
+      state.lastTime = ts;
 
-function initExerciseBehavior(id){
-  clearTimers();
-  if(id===1){
-    const dot=document.getElementById('pp-dot'); let t=0; state.exerciseTimer=setInterval(()=>{ t=(t+.09)%6.28; const y=Math.sin(t)*70; dot.style.left='50%'; dot.style.top=`${48+y/2}%`; },60);
-  } else if(id===3){
-    const target=document.getElementById('nf-target'); let near=true; state.exerciseTimer=setInterval(()=>{ near=!near; target.textContent=near?'NEAR':'FAR'; target.style.transform=near?'scale(1.12)':'scale(.88)'; target.style.opacity=near?'1':'0.58'; },1100);
-  } else if(id===4){
-    const dot=document.getElementById('sp-dot'); let a=0; state.exerciseTimer=setInterval(()=>{ a=(a+.06)%6.28; dot.style.left=`${50+Math.sin(a)*38}%`; dot.style.top=`${50+Math.sin(a*1.5)*22}%`; },50);
-  } else if(id===5){
-    let i=0; const ids=['sj-a','sj-b','sj-c']; state.exerciseTimer=setInterval(()=>{ ids.forEach((x)=>document.getElementById(x).style.color='var(--text)'); document.getElementById(ids[i]).style.color='var(--primary)'; i=(i+1)%ids.length; },550);
-  } else if(id===6){
-    const grid=document.getElementById('search-grid'); const symbols=['○','◇','△','□','⊕']; const target='⊕'; const cells=[]; for(let i=0;i<24;i++){ const b=document.createElement('button'); b.className='btn'; b.style.borderRadius='10px'; b.style.padding='.3rem'; b.textContent=symbols[Math.floor(Math.random()*4)]; cells.push(b); }
-    cells[Math.floor(Math.random()*cells.length)].textContent=target;
-    cells.forEach((c)=>{ c.onclick=()=>{ if(c.textContent===target){ c.style.background='var(--primary-soft)'; showCue(); } }; grid.appendChild(c); });
-  } else if(id===9){
-    const l=document.getElementById('flash-l'); const r=document.getElementById('flash-r'); let on=false; state.exerciseTimer=setInterval(()=>{ on=!on; l.style.opacity=on?'1':'0'; r.style.opacity=!on?'1':'0'; },420);
-  } else if(id===10){
-    const letter=document.getElementById('contrast-letter'); const chars=['E','F','P','R']; let i=0; state.exerciseTimer=setInterval(()=>{ i=(i+1)%chars.length; letter.textContent=chars[i]; letter.style.opacity=String(0.35 + (i%4)*0.18); },700);
-  }
-}
+      state.fpsAccumulator += dt;
+      state.fpsCounter += 1;
+      if (state.fpsAccumulator >= 500) {
+        state.nowFps = Math.round((state.fpsCounter * 1000) / state.fpsAccumulator);
+        state.fpsAccumulator = 0;
+        state.fpsCounter = 0;
+      }
 
-function renderSession(){
-  const ex=EXERCISES[state.sessionIndex];
-  if(state.summary){
-    pageEls.session.innerHTML=`<article class="card"><h2>Session Summary</h2><p><strong>Completed exercises:</strong> ${state.summary.completed} / 10</p><p><strong>Time spent:</strong> ${state.summary.minutes} minutes</p><p><strong>Mode at finish:</strong> ${state.summary.mode}</p><button class="btn" onclick="setPage('progress')">View Progress</button> <button class="btn primary" onclick="startSession(0)">Start New Session</button><form id="symptomForm" class="symptoms"><h3>Symptom Self-Check</h3>${symptomKeys.map(k=>`<label><span>${k[0].toUpperCase()+k.slice(1)}</span><input type="range" min="1" max="5" value="3" name="${k}"/><span>3</span></label>`).join('')}<button class="btn" type="submit">Save Symptom Check</button></form></article>`;
-    document.querySelectorAll('#symptomForm input[type="range"]').forEach((el)=>el.oninput=(e)=>e.target.parentElement.querySelector('span:last-child').textContent=e.target.value);
-    document.getElementById('symptomForm').onsubmit=(e)=>{e.preventDefault();const fd=new FormData(e.target);const payload={date:todayISO()};symptomKeys.forEach(k=>payload[k]=Number(fd.get(k)));progress.symptomHistory.unshift(payload);progress.symptomHistory=progress.symptomHistory.slice(0,30);saveProgress();alert('Symptom check saved.');renderProgress();};
-    return;
-  }
+      drawBackground();
+      EXERCISES[state.exerciseIndex].run(dt);
 
-  const p=((state.sessionIndex+1)/EXERCISES.length)*100;
-  pageEls.session.innerHTML=`<div class="session-layout"><article class="card"><h2>${ex.name}</h2><p><strong>What it trains:</strong> ${ex.trains}</p><p>${ex.how}</p><p><strong>Recommended distance:</strong> ${ex.distance}</p><div class="toggle-row"><button class="btn ${state.mode==='both'?'active':''}" onclick="setMode('both')">Both eyes</button><button class="btn ${state.mode==='single'?'active':''}" onclick="setMode('single')" ${ex.eyes==='Both eyes'?'disabled':''}>Single eye</button></div><div class="zone" id="exercise-zone">${exerciseZoneHTML(ex.id)}</div><p class="cue ${state.cue?'show':''}">✓ Step complete</p></article><aside class="card"><p><strong>Exercise ${state.sessionIndex+1}</strong> of 10</p><div class="progress"><span style="width:${p}%"></span></div><p style="color:var(--muted)">Each exercise is independent. Follow the specific instruction shown in the training zone.</p><button class="btn primary block" onclick="completeStep()">Mark Step Complete</button><button class="btn block" onclick="nextExercise()">Next Exercise</button></aside></div>`;
-  initExerciseBehavior(ex.id);
-}
+      state.score += 0.08;
+      ui.fps.textContent = `${state.nowFps} FPS`;
+      ui.score.textContent = `Focus score: ${Math.floor(state.score)}`;
+      ui.time.textContent = `Time: ${Math.floor((ts - state.startTime) / 1000)}s`;
 
-function symptomAverages(){ if(!progress.symptomHistory.length) return null; const t=Object.fromEntries(symptomKeys.map(k=>[k,0])); progress.symptomHistory.forEach(e=>symptomKeys.forEach(k=>t[k]+=e[k])); return Object.fromEntries(symptomKeys.map(k=>[k,(t[k]/progress.symptomHistory.length).toFixed(1)])); }
+      state.raf = requestAnimationFrame(loop);
+    }
 
-function renderProgress(){ const avg=symptomAverages(); pageEls.progress.innerHTML=`<section class="card"><h2>Progress</h2><div class="metrics"><div class="metric"><strong>${progress.sessions}</strong><span>Session count</span></div><div class="metric"><strong>${progress.streak}</strong><span>Streak (days)</span></div><div class="metric"><strong>${progress.totalMinutes}</strong><span>Total minutes</span></div></div><h3>Symptom Feedback</h3>${avg?`<ul class="feedback">${symptomKeys.map(k=>`<li><span>${k}</span><strong>${avg[k]} / 5</strong></li>`).join('')}</ul>`:'<p>No symptom data yet. Finish a session and save the self-check.</p>'}</section>`; }
+    fpsSelect.onchange = (e) => { state.fpsTarget = Number(e.target.value); showCue(`${state.fpsTarget} FPS mode set`); };
+    startBtn.onclick = start;
+    nextBtn.onclick = nextExercise;
+    bothBtn.onclick = () => setMode('both');
+    singleBtn.onclick = () => setMode('single');
 
-function renderScience(){ pageEls.science.innerHTML=`<section class="card"><h2>Science</h2><p style="color:var(--muted)">These are research-inspired visual skill drills for convergence, accommodation, tracking, scanning, attention, and comfort. They may help some users, but results vary and this does not replace professional care.</p><div class="grid">${EXERCISES.map(e=>`<article class="card exercise-card"><h3>${e.name}</h3><p><strong>Trains:</strong> ${e.trains}</p><p>${e.science}</p></article>`).join('')}</div></section>`; }
-
-renderNav(); renderHome(); renderLibrary(); renderSession(); renderProgress(); renderScience();
-window.setPage=setPage; window.startSession=startSession; window.completeStep=completeStep; window.nextExercise=nextExercise; window.setMode=setMode;
-</script>
+    setMode('both');
+    updateInfo();
+    requestAnimationFrame(loop);
+  </script>
 </body>
 </html>
