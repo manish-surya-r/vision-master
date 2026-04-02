@@ -6,581 +6,255 @@
   <title>Vision Master</title>
   <style>
     :root {
-      --bg: #f4f7fc;
+      --bg: #f5f8ff;
       --surface: #ffffff;
-      --surface-soft: #eef4ff;
-      --text: #1f2b42;
-      --muted: #5a6880;
-      --primary: #4d74ff;
+      --surface-soft: #edf3ff;
+      --text: #1f2b40;
+      --muted: #5f6f8a;
+      --primary: #4f79ff;
       --primary-soft: #dfe8ff;
-      --success: #1f9a67;
-      --border: #d9e3f1;
-      --shadow: 0 14px 32px rgba(33, 61, 110, 0.1);
+      --ok: #1c9a64;
+      --border: #d9e4f3;
+      --shadow: 0 14px 34px rgba(40, 70, 120, 0.1);
     }
-
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, Segoe UI, system-ui, -apple-system, sans-serif;
-      color: var(--text);
-      background: radial-gradient(circle at top right, #eaf1ff, var(--bg));
-    }
-
+    body { margin: 0; font-family: Inter, Segoe UI, system-ui, sans-serif; color: var(--text); background: radial-gradient(circle at top right, #eaf2ff, var(--bg)); }
     .container { width: min(1120px, 92vw); margin: 0 auto; }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(244, 247, 252, 0.92);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(10px);
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      padding: 0.9rem 0;
-    }
-
-    .brand h1 { margin: 0; font-size: 1.2rem; }
-    .brand p { margin: 0; font-size: 0.9rem; color: var(--muted); }
-
-    nav { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-
-    .btn {
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: var(--surface);
-      color: var(--text);
-      font-weight: 600;
-      padding: 0.5rem 0.95rem;
-      cursor: pointer;
-      transition: transform 0.14s ease;
-    }
-    .btn:hover { transform: translateY(-1px); }
-    .btn.active, .btn.primary { background: var(--primary); color: #fff; border-color: transparent; }
-    .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
-    .btn.block { width: 100%; margin-top: 0.45rem; }
-
+    header { position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border); background: rgba(245,248,255,.92); backdrop-filter: blur(10px); }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.9rem 0; }
+    .brand h1 { margin:0; font-size:1.2rem; }
+    .brand p { margin:0; color:var(--muted); font-size:.9rem; }
+    nav { display:flex; flex-wrap:wrap; gap:.45rem; }
+    .btn { border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:999px; padding:.52rem .95rem; font-weight:600; cursor:pointer; }
+    .btn.primary,.btn.active { background:var(--primary); color:#fff; border-color:transparent; }
+    .btn:disabled { opacity:.55; cursor:not-allowed; }
+    .btn.block{ width:100%; margin-top:.45rem; }
+    .page { display:none; animation:fade .25s ease; }
+    .page.active { display:block; }
     main { padding: 1.2rem 0 2rem; }
-    .page { display: none; animation: fade 0.3s ease; }
-    .page.active { display: block; }
+    @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+    .card{ background:var(--surface); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); padding:1rem; }
+    .hero{ display:grid; grid-template-columns:1.1fr .9fr; gap:1rem; }
+    .hero h2{ margin:.1rem 0 .7rem; font-size:clamp(1.5rem,3vw,2.2rem); }
+    .hero p{ color:var(--muted); line-height:1.55; }
+    .stats{ display:grid; gap:.7rem; }
+    .stat{ border:1px solid var(--border); background:var(--surface-soft); border-radius:12px; padding:.72rem; }
+    .stat strong{ display:block; font-size:1.32rem; }
+    .stat span{ color:var(--muted); }
+    .section-head { display:flex; justify-content:space-between; gap:.8rem; align-items:center; margin-bottom:.8rem; }
+    .grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.82rem; }
+    .pill{ display:inline-block; border-radius:999px; background:var(--primary-soft); color:#2b4ea9; font-size:.8rem; font-weight:700; padding:.2rem .6rem; margin-bottom:.3rem; }
+    .exercise-card h3{ margin:.15rem 0 .4rem; }
+    .exercise-card p{ margin:.25rem 0; color:var(--muted); font-size:.93rem; }
 
-    @keyframes fade { from { opacity: 0; transform: translateY(5px);} to { opacity: 1; transform: translateY(0);} }
+    .session-layout{ display:grid; grid-template-columns:1fr 325px; gap:1rem; }
+    .toggle-row{ display:flex; flex-wrap:wrap; gap:.5rem; margin:.55rem 0; }
+    .zone{ border:1px dashed var(--border); border-radius:14px; min-height:270px; display:grid; place-items:center; background:linear-gradient(150deg,#f8fbff,#edf4ff); position:relative; overflow:hidden; }
+    .progress{ height:10px; border-radius:999px; background:#e6eefb; overflow:hidden; margin:.5rem 0 .65rem; }
+    .progress span{ display:block; height:100%; background:linear-gradient(90deg,#4f79ff,#6ab5ff); }
+    .cue{ min-height:24px; color:transparent; font-weight:700; }
+    .cue.show{ color:var(--ok); }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      padding: 1rem;
-    }
+    .dot{ width:24px; height:24px; border-radius:50%; background:radial-gradient(circle at 30% 30%,#fff,#4f79ff); box-shadow:0 0 0 8px rgba(79,121,255,.14); position:absolute; }
+    .bead{ width:18px;height:18px;border-radius:50%; position:absolute; }
+    .target-char{ font-size:2.7rem; font-weight:800; letter-spacing:.06em; }
+    .ring{ position:absolute; width:88px; height:88px; border-radius:50%; border:4px solid rgba(79,121,255,.5); opacity:0; transition:opacity .2s ease; }
+    .flash{ position:absolute; width:44px; height:44px; border-radius:50%; border:3px solid #4f79ff; opacity:0; }
 
-    .hero-layout { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1rem; }
-    .hero h2 { margin: 0 0 .7rem; font-size: clamp(1.55rem, 3vw, 2.25rem); }
-    .hero p { color: var(--muted); line-height: 1.55; }
+    .rest-overlay{ position:fixed; inset:0; display:none; place-items:center; background:rgba(20,30,50,.72); z-index:100; }
+    .rest-overlay.active{ display:grid; }
 
-    .stats { display: grid; gap: .7rem; }
-    .stat {
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      padding: .75rem;
-    }
-    .stat strong { display: block; font-size: 1.3rem; }
-    .stat span { color: var(--muted); font-size: .92rem; }
+    .symptoms{ display:grid; gap:.5rem; margin-top:.75rem; }
+    .symptoms label{ display:grid; grid-template-columns:100px 1fr 26px; align-items:center; gap:.6rem; }
+    .metrics{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.7rem; margin-bottom:.8rem; }
+    .metric{ border:1px solid var(--border); background:var(--surface-soft); border-radius:12px; padding:.7rem; }
+    .metric strong{ display:block; font-size:1.34rem; }
+    .feedback{ list-style:none; margin:0; padding:0; display:grid; gap:.45rem; }
+    .feedback li{ display:flex; justify-content:space-between; background:#f8fbff; border-radius:10px; padding:.5rem .65rem; }
+    footer{ color:var(--muted); padding:.8rem 0 1.8rem; font-size:.9rem; }
 
-    .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .9rem; gap: .7rem; }
-
-    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
-
-    .exercise-card h3 { margin: .2rem 0 .45rem; }
-    .exercise-card p { margin: .28rem 0; color: var(--muted); font-size: .93rem; line-height: 1.45; }
-    .pill {
-      display: inline-block;
-      background: var(--primary-soft);
-      color: #294cad;
-      border-radius: 999px;
-      font-size: .8rem;
-      font-weight: 700;
-      padding: .2rem .6rem;
-      margin-bottom: .3rem;
-    }
-
-    .session-layout { display: grid; grid-template-columns: 1fr 320px; gap: 1rem; position: relative; }
-    .toggle-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .5rem; }
-
-    .target-zone {
-      border: 1px dashed var(--border);
-      border-radius: 14px;
-      background: linear-gradient(145deg, #f8fbff, #edf4ff);
-      min-height: 260px;
-      margin-top: .75rem;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .target-dot {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ffffff, #4d74ff);
-      box-shadow: 0 0 0 8px rgba(77, 116, 255, .14);
-      transition: transform .8s ease;
-    }
-
-    .progress {
-      height: 10px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: #e8eefb;
-      margin: .5rem 0;
-    }
-
-    .progress > span {
-      display: block;
-      height: 100%;
-      width: 0;
-      background: linear-gradient(90deg, #4d74ff, #6cb6ff);
-      transition: width .3s ease;
-    }
-
-    .cue {
-      min-height: 24px;
-      margin-top: .5rem;
-      color: transparent;
-      font-weight: 700;
-      transition: color .2s ease;
-    }
-    .cue.show { color: var(--success); }
-
-    .rest-overlay {
-      position: fixed;
-      inset: 0;
-      display: none;
-      place-items: center;
-      background: rgba(20, 30, 48, 0.72);
-      z-index: 100;
-    }
-    .rest-overlay.active { display: grid; }
-
-    .symptoms { display: grid; gap: .5rem; margin-top: .75rem; }
-    .symptoms label { display: grid; grid-template-columns: 95px 1fr 28px; align-items: center; gap: .55rem; }
-
-    .metric-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; margin-bottom: .8rem; }
-    .metric { background: var(--surface-soft); border: 1px solid var(--border); border-radius: 12px; padding: .7rem; }
-    .metric strong { display: block; font-size: 1.35rem; }
-    .metric span { color: var(--muted); }
-
-    .feedback-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .45rem; }
-    .feedback-list li { display: flex; justify-content: space-between; background: #f8fbff; border-radius: 10px; padding: .5rem .65rem; }
-
-    footer { padding: .8rem 0 2rem; color: var(--muted); font-size: .9rem; }
-
-    @media (max-width: 960px) {
-      .hero-layout, .grid, .session-layout, .metric-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width:960px){ .hero,.grid,.session-layout,.metrics{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container topbar">
-      <div class="brand">
-        <h1>Vision Master</h1>
-        <p>Guided, screen-based visual skills training</p>
-      </div>
-      <nav id="nav"></nav>
-    </div>
-  </header>
+<header>
+  <div class="container topbar">
+    <div class="brand"><h1>Vision Master</h1><p>Screen-based guided visual skills training</p></div>
+    <nav id="nav"></nav>
+  </div>
+</header>
 
-  <main class="container">
-    <section id="home" class="page active"></section>
-    <section id="library" class="page"></section>
-    <section id="session" class="page"></section>
-    <section id="progress" class="page"></section>
-    <section id="science" class="page"></section>
-  </main>
+<main class="container">
+  <section id="home" class="page active"></section>
+  <section id="library" class="page"></section>
+  <section id="session" class="page"></section>
+  <section id="progress" class="page"></section>
+  <section id="science" class="page"></section>
+</main>
 
-  <div id="restOverlay" class="rest-overlay"></div>
+<div id="rest" class="rest-overlay"></div>
 
-  <footer class="container">
-    Disclaimer: Vision Master is for visual skill training and comfort habits. It does not diagnose, treat, or cure eye conditions, and does not replace care from a licensed eye-care professional.
-  </footer>
+<footer class="container">Disclaimer: Vision Master is for training visual skills and comfort habits. It does not diagnose, treat, or cure eye conditions, and does not replace professional eye-care advice.</footer>
 
-  <script>
-    const EXERCISES = [
-      { id: 1, name: 'Pencil Push-Up Simulator', trains: 'Convergence', how: 'A central target moves from far to near while you keep it single and clear.', distance: 'Laptop at 50–70 cm', eyes: 'Both eyes', science: 'Supports near-point convergence and controlled binocular alignment at near.' },
-      { id: 2, name: 'Brock String on Screen', trains: 'Binocular coordination and depth perception', how: 'Shift focus between 3–5 virtual beads at near/mid/far points.', distance: 'Laptop at 60–80 cm', eyes: 'Both eyes', science: 'Trains coordinated vergence changes and depth awareness across distances.' },
-      { id: 3, name: 'Near–Far Focus Switch', trains: 'Accommodation flexibility', how: 'Alternate between a near target and a far target on screen.', distance: 'Laptop at 50–70 cm', eyes: 'Both eyes', science: 'Practices focusing flexibility during repeated near-far demand changes.' },
-      { id: 4, name: 'Smooth Pursuit Tracker', trains: 'Smooth tracking', how: 'Follow a dot moving smoothly across the screen with eyes only.', distance: 'Laptop at 60–75 cm', eyes: 'Both eyes', science: 'Builds smoother pursuit eye movements and gaze stability.' },
-      { id: 5, name: 'Saccade Jump Drill', trains: 'Rapid eye movements', how: 'Look quickly between two or more distant targets on screen.', distance: 'Laptop at 60–75 cm', eyes: 'Both eyes', science: 'Targets saccade speed and precision for efficient gaze shifts.' },
-      { id: 6, name: 'Visual Search Challenge', trains: 'Attention and reaction time', how: 'Find a target symbol among distractors as fast as possible.', distance: 'Laptop at 60–80 cm', eyes: 'Both eyes', science: 'Combines scanning, selective attention, and rapid visual decisions.' },
-      { id: 7, name: 'Single-Eye Occlusion Focus', trains: 'Monocular control and eye independence', how: 'Cover one eye gently and perform fixation or tracking with the open eye.', distance: 'Laptop at 50–70 cm', eyes: 'Single eye', science: 'Encourages monocular fixation control and eye-specific awareness.' },
-      { id: 8, name: 'Alternating Eye Fixation', trains: 'Interocular switching and fixation stability', how: 'Alternate which eye is open while staying focused on a central target.', distance: 'Laptop at 50–70 cm', eyes: 'Single eye', science: 'Practices controlled interocular switching with steady fixation.' },
-      { id: 9, name: 'Peripheral Awareness Rings', trains: 'Peripheral awareness and scanning', how: 'Keep gaze on center while noticing brief side flashes or rings.', distance: 'Laptop at 60–80 cm', eyes: 'Both eyes', science: 'Challenges peripheral detection while preserving central fixation.' },
-      { id: 10, name: 'Contrast and Letter Clarity Drill', trains: 'Visual discrimination and fixation quality', how: 'Identify letters or symbols at changing contrast or sharpness.', distance: 'Laptop at 60–80 cm', eyes: 'Both eyes', science: 'Trains detail discrimination under changing visual clarity demand.' }
-    ];
+<script>
+const EXERCISES = [
+  { id:1, name:'Pencil Push-Up Simulator', trains:'Convergence', how:'A central target moves from far to near while you keep it single and clear.', distance:'Laptop at 50–70 cm', eyes:'Both eyes', science:'Trains near-point convergence and sustained binocular control.' },
+  { id:2, name:'Brock String on Screen', trains:'Binocular coordination and depth perception', how:'Shift focus between 3–5 virtual beads at near/mid/far points.', distance:'Laptop at 60–80 cm', eyes:'Both eyes', science:'Practices vergence changes and depth awareness across distances.' },
+  { id:3, name:'Near–Far Focus Switch', trains:'Accommodation flexibility', how:'Alternate between a near target and a far target on screen.', distance:'Laptop at 50–70 cm', eyes:'Both eyes', science:'Supports repeated near-far focusing flexibility.' },
+  { id:4, name:'Smooth Pursuit Tracker', trains:'Smooth tracking', how:'A dot moves smoothly across the screen; follow with eyes only.', distance:'Laptop at 60–75 cm', eyes:'Both eyes', science:'Builds pursuit tracking quality and gaze stability.' },
+  { id:5, name:'Saccade Jump Drill', trains:'Rapid eye movements', how:'Look quickly between two or more distant targets.', distance:'Laptop at 60–75 cm', eyes:'Both eyes', science:'Trains fast, accurate saccadic shifts.' },
+  { id:6, name:'Visual Search Challenge', trains:'Attention and reaction time', how:'Find a target symbol among distractors quickly.', distance:'Laptop at 60–80 cm', eyes:'Both eyes', science:'Combines scanning, selective attention, and quick target detection.' },
+  { id:7, name:'Single-Eye Occlusion Focus', trains:'Monocular control and eye independence', how:'Cover one eye gently and perform fixation/tracking with the open eye.', distance:'Laptop at 50–70 cm', eyes:'Single eye', science:'Encourages monocular fixation control.' },
+  { id:8, name:'Alternating Eye Fixation', trains:'Interocular switching and fixation stability', how:'Alternate which eye is open while focusing on center target.', distance:'Laptop at 50–70 cm', eyes:'Single eye', science:'Practices stable fixation during controlled eye switching.' },
+  { id:9, name:'Peripheral Awareness Rings', trains:'Peripheral awareness and scanning', how:'Keep gaze centered while noticing brief side flashes/rings.', distance:'Laptop at 60–80 cm', eyes:'Both eyes', science:'Challenges peripheral detection while preserving central gaze.' },
+  { id:10, name:'Contrast and Letter Clarity Drill', trains:'Visual discrimination and fixation quality', how:'Identify letters/symbols at changing contrast or sharpness.', distance:'Laptop at 60–80 cm', eyes:'Both eyes', science:'Trains discrimination at variable contrast levels.' }
+];
+const symptomKeys=['strain','blur','headache','dryness','comfort'];
+const pages=['home','library','session','progress','science'];
+const progress=JSON.parse(localStorage.getItem('vision_progress')||'null')||{sessions:0,streak:0,lastDate:null,totalMinutes:0,symptomHistory:[]};
+const state={page:'home',sessionIndex:0,mode:'both',sessionStart:0,completed:new Set(),summary:null,cue:false,restSeconds:12,exerciseTimer:null,restTimer:null,restInterval:null};
 
-    const PAGES = ['home', 'library', 'session', 'progress', 'science'];
-    const symptomKeys = ['strain', 'blur', 'headache', 'dryness', 'comfort'];
+const nav=document.getElementById('nav');
+const pageEls=Object.fromEntries(pages.map(p=>[p,document.getElementById(p)]));
+const restEl=document.getElementById('rest');
 
-    const state = {
-      page: 'home',
-      sessionIndex: 0,
-      sessionStart: null,
-      completed: [],
-      mode: 'both',
-      cueOn: false,
-      restSeconds: 12,
-      summary: null,
-      symptoms: { strain: 3, blur: 3, headache: 3, dryness: 3, comfort: 3 }
-    };
+function saveProgress(){ localStorage.setItem('vision_progress',JSON.stringify(progress)); }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function clearTimers(){ if(state.exerciseTimer){clearInterval(state.exerciseTimer);state.exerciseTimer=null;} if(state.restTimer){clearTimeout(state.restTimer);state.restTimer=null;} if(state.restInterval){clearInterval(state.restInterval);state.restInterval=null;} }
 
-    const progress = JSON.parse(localStorage.getItem('vision_master_progress') || 'null') || {
-      sessions: 0,
-      streak: 0,
-      lastDate: null,
-      totalMinutes: 0,
-      symptomHistory: []
-    };
+function renderNav(){
+  nav.innerHTML='';
+  pages.forEach((p)=>{ const b=document.createElement('button'); b.className='btn'; b.textContent=p[0].toUpperCase()+p.slice(1); b.dataset.page=p; b.onclick=()=>setPage(p); nav.appendChild(b); });
+  setPage('home');
+}
 
-    const navEl = document.getElementById('nav');
-    const pages = Object.fromEntries(PAGES.map((p) => [p, document.getElementById(p)]));
-    const restOverlay = document.getElementById('restOverlay');
+function setPage(p){
+  state.page=p;
+  pages.forEach((k)=>pageEls[k].classList.toggle('active',k===p));
+  [...nav.children].forEach((b)=>b.classList.toggle('active',b.dataset.page===p));
+  if(p!=='session') clearTimers();
+  if(p==='progress') renderProgress();
+}
 
-    function saveProgress() {
-      localStorage.setItem('vision_master_progress', JSON.stringify(progress));
-    }
+function exerciseCard(e){
+  return `<article class="card exercise-card"><span class="pill">Exercise ${e.id}</span><h3>${e.name}</h3><p><strong>What it trains:</strong> ${e.trains}</p><p><strong>How to perform:</strong> ${e.how}</p><p><strong>Recommended distance:</strong> ${e.distance}</p><p><strong>Eyes used:</strong> ${e.eyes}</p><button class="btn" onclick="startSession(${e.id-1})">Start from this exercise</button></article>`;
+}
 
-    function todayISO() {
-      return new Date().toISOString().slice(0, 10);
-    }
+function renderHome(){
+  pageEls.home.innerHTML=`<div class="hero"><article class="card"><h2>Calm, guided visual skill sessions for laptop screens.</h2><p>Vision Master supports practice for convergence, accommodation, tracking, scanning, attention, and visual comfort with research-inspired exercises.</p><p>These exercises may help visual skills for some users, but outcomes vary and they are not a substitute for professional care.</p><button class="btn primary" onclick="setPage('library')">Quick Start</button></article><aside class="stats"><div class="stat"><strong>10</strong><span>Independent exercises</span></div><div class="stat"><strong>${progress.sessions}</strong><span>Sessions completed</span></div><div class="stat"><strong>${progress.streak}</strong><span>Current streak</span></div></aside></div>`;
+}
 
-    function setPage(pageName) {
-      state.page = pageName;
-      PAGES.forEach((p) => pages[p].classList.toggle('active', p === pageName));
-      [...navEl.children].forEach((b) => b.classList.toggle('active', b.dataset.page === pageName));
-      if (pageName === 'progress') renderProgress();
-    }
+function renderLibrary(){ pageEls.library.innerHTML=`<section><div class="section-head"><h2>Exercise Library</h2><button class="btn primary" onclick="startSession(0)">Start Session</button></div><div class="grid">${EXERCISES.map(exerciseCard).join('')}</div></section>`; }
 
-    function navButton(pageName) {
-      const b = document.createElement('button');
-      b.className = 'btn';
-      b.textContent = pageName[0].toUpperCase() + pageName.slice(1);
-      b.dataset.page = pageName;
-      b.onclick = () => setPage(pageName);
-      return b;
-    }
+function beep(){
+  try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);g.gain.value=.025;o.frequency.value=780;o.start();o.stop(c.currentTime+.08);}catch(_){/* no-op */}
+}
 
-    function renderNav() {
-      navEl.innerHTML = '';
-      PAGES.forEach((p) => navEl.appendChild(navButton(p)));
-      setPage('home');
-    }
+function showCue(){ state.cue=true; beep(); renderSession(); setTimeout(()=>{state.cue=false; renderSession();},700); }
 
-    function exerciseCard(exercise, includeStart = true) {
-      return `
-        <article class="card exercise-card">
-          <span class="pill">Exercise ${exercise.id}</span>
-          <h3>${exercise.name}</h3>
-          <p><strong>What it trains:</strong> ${exercise.trains}</p>
-          <p><strong>How to perform:</strong> ${exercise.how}</p>
-          <p><strong>Recommended distance:</strong> ${exercise.distance}</p>
-          <p><strong>Eyes used:</strong> ${exercise.eyes}</p>
-          ${includeStart ? `<button class="btn" onclick="startSession(${exercise.id - 1})">Start from this exercise</button>` : ''}
-        </article>
-      `;
-    }
+function startSession(index=0){
+  clearTimers();
+  state.sessionIndex=index;
+  state.mode='both';
+  state.sessionStart=Date.now();
+  state.summary=null;
+  state.completed=new Set();
+  setPage('session');
+  renderSession();
+}
 
-    function renderHome() {
-      pages.home.innerHTML = `
-        <div class="hero-layout">
-          <article class="card hero">
-            <h2>Train visual skills with calm, structured screen sessions.</h2>
-            <p>
-              Vision Master supports practice for convergence, accommodation, tracking, scanning, attention, and visual comfort.
-              It is designed for laptop-first use while staying responsive.
-            </p>
-            <p>
-              This platform is research-inspired and medically cautious: these drills may help visual skills for some users,
-              but outcomes vary and professional care remains essential for persistent symptoms.
-            </p>
-            <button class="btn primary" onclick="setPage('library')">Quick Start</button>
-          </article>
-          <aside class="stats">
-            <div class="stat"><strong>10</strong><span>Distinct exercises</span></div>
-            <div class="stat"><strong>${progress.sessions}</strong><span>Sessions completed</span></div>
-            <div class="stat"><strong>${progress.streak}</strong><span>Current streak</span></div>
-          </aside>
-        </div>
-      `;
-    }
+function completeStep(){ state.completed.add(state.sessionIndex); showCue(); }
 
-    function renderLibrary() {
-      pages.library.innerHTML = `
-        <section>
-          <div class="section-head">
-            <h2>Exercise Library</h2>
-            <button class="btn primary" onclick="startSession(0)">Start Session</button>
-          </div>
-          <div class="grid">${EXERCISES.map((e) => exerciseCard(e, true)).join('')}</div>
-        </section>
-      `;
-    }
+function restThen(next){
+  clearTimers();
+  let left=state.restSeconds;
+  restEl.classList.add('active');
+  const draw=()=>{ restEl.innerHTML=`<div class="card" style="max-width:420px;text-align:center;"><h3>Rest Screen</h3><p>Blink gently, relax focus, and breathe.</p><p><strong>${left}s</strong> to next exercise.</p></div>`; };
+  draw();
+  state.restInterval=setInterval(()=>{ left-=1; draw(); if(left<=0){clearTimers(); restEl.classList.remove('active'); next();}},1000);
+}
 
-    function playCue() {
-      state.cueOn = true;
-      renderSession();
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.connect(g);
-        g.connect(ctx.destination);
-        o.type = 'sine';
-        o.frequency.value = 760;
-        g.gain.value = 0.03;
-        o.start();
-        o.stop(ctx.currentTime + 0.08);
-      } catch (_) {}
-      setTimeout(() => {
-        state.cueOn = false;
-        renderSession();
-      }, 800);
-    }
+function nextExercise(){
+  if(state.sessionIndex<EXERCISES.length-1){ restThen(()=>{ state.sessionIndex+=1; renderSession(); }); }
+  else finishSession();
+}
 
-    function movingTransform(index) {
-      const phase = (Date.now() / 900 + index) % 6;
-      const x = Math.sin(phase) * 100;
-      const y = Math.cos(phase * 1.1) * 36;
-      return `translate(${x}px, ${y}px)`;
-    }
+function updateStreak(){
+  const today=todayISO();
+  if(!progress.lastDate) progress.streak=1;
+  else { const diff=Math.round((new Date(today)-new Date(progress.lastDate))/86400000); if(diff===1) progress.streak+=1; else if(diff>1) progress.streak=1; }
+  progress.lastDate=today;
+}
 
-    function renderSession() {
-      const ex = EXERCISES[state.sessionIndex];
+function finishSession(){
+  clearTimers();
+  const minutes=Math.max(1,Math.round((Date.now()-state.sessionStart)/60000));
+  progress.sessions+=1; progress.totalMinutes+=minutes; updateStreak(); saveProgress();
+  state.summary={completed:state.completed.size,minutes,mode:state.mode==='both'?'Both eyes':'Single eye'};
+  renderHome(); renderSession();
+}
 
-      if (state.summary) {
-        pages.session.innerHTML = `
-          <article class="card">
-            <h2>Session Summary</h2>
-            <p><strong>Completed exercises:</strong> ${state.summary.completed} / 10</p>
-            <p><strong>Time spent:</strong> ${state.summary.minutes} minutes</p>
-            <p><strong>Mode at finish:</strong> ${state.summary.modeLabel}</p>
-            <button class="btn" onclick="setPage('progress')">View Progress</button>
-            <button class="btn primary" onclick="startSession(0)">Start New Session</button>
-            <form class="symptoms" id="symptomForm">
-              <h3>Symptom Self-Check</h3>
-              ${symptomKeys.map((k) => `
-                <label>
-                  <span>${k[0].toUpperCase() + k.slice(1)}</span>
-                  <input type="range" min="1" max="5" value="3" name="${k}" />
-                  <span>3</span>
-                </label>
-              `).join('')}
-              <button class="btn" type="submit">Save Symptom Check</button>
-            </form>
-          </article>
-        `;
+function setMode(mode){ state.mode=mode; renderSession(); }
 
-        document.querySelectorAll('#symptomForm input[type="range"]').forEach((input) => {
-          input.addEventListener('input', (e) => {
-            e.target.parentElement.querySelector('span:last-child').textContent = e.target.value;
-          });
-        });
+function exerciseZoneHTML(id){
+  switch(id){
+    case 1: return `<div id="pp-dot" class="dot"></div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Follow target as it moves near/far.</div>`;
+    case 2: return `<div class="bead" style="left:20%;top:50%;background:#ff6f91"></div><div class="bead" style="left:50%;top:40%;background:#62a8ff"></div><div class="bead" style="left:78%;top:56%;background:#7fd97f"></div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Shift focus bead-to-bead.</div>`;
+    case 3: return `<div class="target-char" id="nf-target" style="position:absolute;">NEAR</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Alternate near and far labels.</div>`;
+    case 4: return `<div id="sp-dot" class="dot"></div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Smoothly track the moving dot.</div>`;
+    case 5: return `<div id="sj-a" class="target-char" style="position:absolute;left:16%;top:45%;font-size:2rem;">A</div><div id="sj-b" class="target-char" style="position:absolute;right:16%;top:45%;font-size:2rem;">B</div><div id="sj-c" class="target-char" style="position:absolute;left:46%;top:20%;font-size:2rem;">C</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Jump gaze quickly between letters.</div>`;
+    case 6: return `<div id="search-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:min(360px,90%);"></div><div style="position:absolute;top:10px;left:12px;font-size:.88rem;color:var(--muted);">Find target: <strong>⊕</strong></div>`;
+    case 7: return `<div class="target-char" style="font-size:3rem;">•</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Cover one eye, hold fixation on center.</div>`;
+    case 8: return `<div class="target-char" style="font-size:3rem;">◎</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Alternate open eye every 5–10 seconds.</div>`;
+    case 9: return `<div class="target-char" style="font-size:3rem;">+</div><div id="flash-l" class="flash" style="left:12%;top:42%;"></div><div id="flash-r" class="flash" style="right:12%;top:42%;"></div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Keep gaze on center and notice side flashes.</div>`;
+    case 10: return `<div id="contrast-letter" class="target-char" style="font-size:3.2rem;">E</div><div style="position:absolute;bottom:10px;color:var(--muted);font-size:.85rem;">Identify letter as contrast changes.</div>`;
+    default: return '';
+  }
+}
 
-        document.getElementById('symptomForm').onsubmit = (e) => {
-          e.preventDefault();
-          const fd = new FormData(e.target);
-          const payload = { date: todayISO() };
-          symptomKeys.forEach((k) => { payload[k] = Number(fd.get(k)); });
-          progress.symptomHistory.unshift(payload);
-          progress.symptomHistory = progress.symptomHistory.slice(0, 25);
-          saveProgress();
-          alert('Symptom check saved.');
-          renderProgress();
-        };
-        return;
-      }
+function initExerciseBehavior(id){
+  clearTimers();
+  if(id===1){
+    const dot=document.getElementById('pp-dot'); let t=0; state.exerciseTimer=setInterval(()=>{ t=(t+.09)%6.28; const y=Math.sin(t)*70; dot.style.left='50%'; dot.style.top=`${48+y/2}%`; },60);
+  } else if(id===3){
+    const target=document.getElementById('nf-target'); let near=true; state.exerciseTimer=setInterval(()=>{ near=!near; target.textContent=near?'NEAR':'FAR'; target.style.transform=near?'scale(1.12)':'scale(.88)'; target.style.opacity=near?'1':'0.58'; },1100);
+  } else if(id===4){
+    const dot=document.getElementById('sp-dot'); let a=0; state.exerciseTimer=setInterval(()=>{ a=(a+.06)%6.28; dot.style.left=`${50+Math.sin(a)*38}%`; dot.style.top=`${50+Math.sin(a*1.5)*22}%`; },50);
+  } else if(id===5){
+    let i=0; const ids=['sj-a','sj-b','sj-c']; state.exerciseTimer=setInterval(()=>{ ids.forEach((x)=>document.getElementById(x).style.color='var(--text)'); document.getElementById(ids[i]).style.color='var(--primary)'; i=(i+1)%ids.length; },550);
+  } else if(id===6){
+    const grid=document.getElementById('search-grid'); const symbols=['○','◇','△','□','⊕']; const target='⊕'; const cells=[]; for(let i=0;i<24;i++){ const b=document.createElement('button'); b.className='btn'; b.style.borderRadius='10px'; b.style.padding='.3rem'; b.textContent=symbols[Math.floor(Math.random()*4)]; cells.push(b); }
+    cells[Math.floor(Math.random()*cells.length)].textContent=target;
+    cells.forEach((c)=>{ c.onclick=()=>{ if(c.textContent===target){ c.style.background='var(--primary-soft)'; showCue(); } }; grid.appendChild(c); });
+  } else if(id===9){
+    const l=document.getElementById('flash-l'); const r=document.getElementById('flash-r'); let on=false; state.exerciseTimer=setInterval(()=>{ on=!on; l.style.opacity=on?'1':'0'; r.style.opacity=!on?'1':'0'; },420);
+  } else if(id===10){
+    const letter=document.getElementById('contrast-letter'); const chars=['E','F','P','R']; let i=0; state.exerciseTimer=setInterval(()=>{ i=(i+1)%chars.length; letter.textContent=chars[i]; letter.style.opacity=String(0.35 + (i%4)*0.18); },700);
+  }
+}
 
-      const progressPct = ((state.sessionIndex + 1) / EXERCISES.length) * 100;
+function renderSession(){
+  const ex=EXERCISES[state.sessionIndex];
+  if(state.summary){
+    pageEls.session.innerHTML=`<article class="card"><h2>Session Summary</h2><p><strong>Completed exercises:</strong> ${state.summary.completed} / 10</p><p><strong>Time spent:</strong> ${state.summary.minutes} minutes</p><p><strong>Mode at finish:</strong> ${state.summary.mode}</p><button class="btn" onclick="setPage('progress')">View Progress</button> <button class="btn primary" onclick="startSession(0)">Start New Session</button><form id="symptomForm" class="symptoms"><h3>Symptom Self-Check</h3>${symptomKeys.map(k=>`<label><span>${k[0].toUpperCase()+k.slice(1)}</span><input type="range" min="1" max="5" value="3" name="${k}"/><span>3</span></label>`).join('')}<button class="btn" type="submit">Save Symptom Check</button></form></article>`;
+    document.querySelectorAll('#symptomForm input[type="range"]').forEach((el)=>el.oninput=(e)=>e.target.parentElement.querySelector('span:last-child').textContent=e.target.value);
+    document.getElementById('symptomForm').onsubmit=(e)=>{e.preventDefault();const fd=new FormData(e.target);const payload={date:todayISO()};symptomKeys.forEach(k=>payload[k]=Number(fd.get(k)));progress.symptomHistory.unshift(payload);progress.symptomHistory=progress.symptomHistory.slice(0,30);saveProgress();alert('Symptom check saved.');renderProgress();};
+    return;
+  }
 
-      pages.session.innerHTML = `
-        <div class="session-layout">
-          <article class="card">
-            <h2>${ex.name}</h2>
-            <p><strong>What it trains:</strong> ${ex.trains}</p>
-            <p>${ex.how}</p>
-            <p><strong>Recommended distance:</strong> ${ex.distance}</p>
+  const p=((state.sessionIndex+1)/EXERCISES.length)*100;
+  pageEls.session.innerHTML=`<div class="session-layout"><article class="card"><h2>${ex.name}</h2><p><strong>What it trains:</strong> ${ex.trains}</p><p>${ex.how}</p><p><strong>Recommended distance:</strong> ${ex.distance}</p><div class="toggle-row"><button class="btn ${state.mode==='both'?'active':''}" onclick="setMode('both')">Both eyes</button><button class="btn ${state.mode==='single'?'active':''}" onclick="setMode('single')" ${ex.eyes==='Both eyes'?'disabled':''}>Single eye</button></div><div class="zone" id="exercise-zone">${exerciseZoneHTML(ex.id)}</div><p class="cue ${state.cue?'show':''}">✓ Step complete</p></article><aside class="card"><p><strong>Exercise ${state.sessionIndex+1}</strong> of 10</p><div class="progress"><span style="width:${p}%"></span></div><p style="color:var(--muted)">Each exercise is independent. Follow the specific instruction shown in the training zone.</p><button class="btn primary block" onclick="completeStep()">Mark Step Complete</button><button class="btn block" onclick="nextExercise()">Next Exercise</button></aside></div>`;
+  initExerciseBehavior(ex.id);
+}
 
-            <div class="toggle-row">
-              <button class="btn ${state.mode === 'both' ? 'active' : ''}" onclick="setMode('both')">Both eyes</button>
-              <button class="btn ${state.mode === 'single' ? 'active' : ''}" onclick="setMode('single')" ${ex.eyes === 'Both eyes' ? 'disabled' : ''}>Single eye</button>
-            </div>
+function symptomAverages(){ if(!progress.symptomHistory.length) return null; const t=Object.fromEntries(symptomKeys.map(k=>[k,0])); progress.symptomHistory.forEach(e=>symptomKeys.forEach(k=>t[k]+=e[k])); return Object.fromEntries(symptomKeys.map(k=>[k,(t[k]/progress.symptomHistory.length).toFixed(1)])); }
 
-            <div class="target-zone">
-              <div class="target-dot" style="transform: ${movingTransform(state.sessionIndex)}"></div>
-            </div>
+function renderProgress(){ const avg=symptomAverages(); pageEls.progress.innerHTML=`<section class="card"><h2>Progress</h2><div class="metrics"><div class="metric"><strong>${progress.sessions}</strong><span>Session count</span></div><div class="metric"><strong>${progress.streak}</strong><span>Streak (days)</span></div><div class="metric"><strong>${progress.totalMinutes}</strong><span>Total minutes</span></div></div><h3>Symptom Feedback</h3>${avg?`<ul class="feedback">${symptomKeys.map(k=>`<li><span>${k}</span><strong>${avg[k]} / 5</strong></li>`).join('')}</ul>`:'<p>No symptom data yet. Finish a session and save the self-check.</p>'}</section>`; }
 
-            <p class="cue ${state.cueOn ? 'show' : ''}">✓ Step complete</p>
-          </article>
+function renderScience(){ pageEls.science.innerHTML=`<section class="card"><h2>Science</h2><p style="color:var(--muted)">These are research-inspired visual skill drills for convergence, accommodation, tracking, scanning, attention, and comfort. They may help some users, but results vary and this does not replace professional care.</p><div class="grid">${EXERCISES.map(e=>`<article class="card exercise-card"><h3>${e.name}</h3><p><strong>Trains:</strong> ${e.trains}</p><p>${e.science}</p></article>`).join('')}</div></section>`; }
 
-          <aside class="card">
-            <p><strong>Exercise ${state.sessionIndex + 1}</strong> of ${EXERCISES.length}</p>
-            <div class="progress"><span style="width: ${progressPct}%"></span></div>
-            <p style="color:var(--muted)">Keep head still, blink naturally, and pause if discomfort increases.</p>
-            <button class="btn primary block" onclick="completeStep()">Mark Step Complete</button>
-            <button class="btn block" onclick="nextExercise()">Next Exercise</button>
-          </aside>
-        </div>
-      `;
-    }
-
-    function setMode(mode) {
-      state.mode = mode;
-      renderSession();
-    }
-
-    function startSession(startIndex = 0) {
-      state.sessionIndex = startIndex;
-      state.sessionStart = Date.now();
-      state.completed = [];
-      state.mode = 'both';
-      state.summary = null;
-      state.cueOn = false;
-      setPage('session');
-      renderSession();
-    }
-
-    function completeStep() {
-      if (!state.completed.includes(state.sessionIndex)) {
-        state.completed.push(state.sessionIndex);
-      }
-      playCue();
-    }
-
-    function showRestOverlay(seconds, onDone) {
-      let left = seconds;
-      restOverlay.classList.add('active');
-      const tick = () => {
-        restOverlay.innerHTML = `
-          <div class="card" style="max-width:420px;text-align:center;">
-            <h3>Rest Screen</h3>
-            <p>Relax your eyes, blink gently, and breathe.</p>
-            <p><strong>${left}s</strong> until next exercise.</p>
-          </div>
-        `;
-        if (left <= 0) {
-          restOverlay.classList.remove('active');
-          onDone();
-          return;
-        }
-        left -= 1;
-        setTimeout(tick, 1000);
-      };
-      tick();
-    }
-
-    function updateStreak() {
-      const today = todayISO();
-      if (!progress.lastDate) {
-        progress.streak = 1;
-      } else {
-        const diff = Math.round((new Date(today) - new Date(progress.lastDate)) / 86400000);
-        if (diff === 1) progress.streak += 1;
-        else if (diff > 1) progress.streak = 1;
-      }
-      progress.lastDate = today;
-    }
-
-    function finishSession() {
-      const minutes = Math.max(1, Math.round((Date.now() - state.sessionStart) / 60000));
-      progress.sessions += 1;
-      progress.totalMinutes += minutes;
-      updateStreak();
-      saveProgress();
-
-      state.summary = {
-        completed: state.completed.length,
-        minutes,
-        modeLabel: state.mode === 'both' ? 'Both eyes' : 'Single eye'
-      };
-
-      renderHome();
-      renderSession();
-    }
-
-    function nextExercise() {
-      if (state.sessionIndex < EXERCISES.length - 1) {
-        showRestOverlay(state.restSeconds, () => {
-          state.sessionIndex += 1;
-          renderSession();
-        });
-      } else {
-        finishSession();
-      }
-    }
-
-    function symptomAverages() {
-      if (!progress.symptomHistory.length) return null;
-      const totals = Object.fromEntries(symptomKeys.map((k) => [k, 0]));
-      progress.symptomHistory.forEach((entry) => {
-        symptomKeys.forEach((k) => totals[k] += entry[k]);
-      });
-      return Object.fromEntries(symptomKeys.map((k) => [k, (totals[k] / progress.symptomHistory.length).toFixed(1)]));
-    }
-
-    function renderProgress() {
-      const avg = symptomAverages();
-      pages.progress.innerHTML = `
-        <section class="card">
-          <h2>Progress</h2>
-          <div class="metric-grid">
-            <div class="metric"><strong>${progress.sessions}</strong><span>Session count</span></div>
-            <div class="metric"><strong>${progress.streak}</strong><span>Streak (days)</span></div>
-            <div class="metric"><strong>${progress.totalMinutes}</strong><span>Total minutes</span></div>
-          </div>
-          <h3>Symptom Feedback</h3>
-          ${avg ? `<ul class="feedback-list">${symptomKeys.map((k) => `<li><span>${k}</span><strong>${avg[k]} / 5</strong></li>`).join('')}</ul>` : '<p>No symptom feedback yet. Complete a session and save your self-check.</p>'}
-        </section>
-      `;
-    }
-
-    function renderScience() {
-      pages.science.innerHTML = `
-        <section class="card">
-          <h2>Science</h2>
-          <p style="color:var(--muted)">
-            These drills are research-informed exercises for training visual skills such as convergence, accommodation,
-            tracking, scanning, attention, and comfort. They may help some users, but outcomes vary and this does not replace professional care.
-          </p>
-          <div class="grid">${EXERCISES.map((e) => `
-            <article class="card exercise-card">
-              <h3>${e.name}</h3>
-              <p><strong>Trains:</strong> ${e.trains}</p>
-              <p>${e.science}</p>
-            </article>
-          `).join('')}</div>
-        </section>
-      `;
-    }
-
-    renderNav();
-    renderHome();
-    renderLibrary();
-    renderSession();
-    renderProgress();
-    renderScience();
-
-    window.setPage = setPage;
-    window.startSession = startSession;
-    window.completeStep = completeStep;
-    window.nextExercise = nextExercise;
-    window.setMode = setMode;
-  </script>
+renderNav(); renderHome(); renderLibrary(); renderSession(); renderProgress(); renderScience();
+window.setPage=setPage; window.startSession=startSession; window.completeStep=completeStep; window.nextExercise=nextExercise; window.setMode=setMode;
+</script>
 </body>
 </html>
